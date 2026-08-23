@@ -1,651 +1,165 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Aarav Sharma — Builder, payment recovery & agentic systems</title>
-<meta name="description" content="BTech CSE builder shipping production-grade recovery systems and agentic Web3 tools. Recoup, ChainGuard, PayParity — live rails, real deployments, honest metrics.">
-<meta property="og:title" content="Aarav Sharma — Proof of Shipping">
-<meta property="og:description" content="Payment recovery systems, agentic tooling, and on-chain work. Every entry below is verifiable.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://aaravfractal.com">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
-<style>
-:root{
-  --ink:#060B14;
-  --ink-2:#0B1220;
-  --ink-3:#101A2B;
-  --rule:#1A2436;
-  --paper:#E9EEF5;
-  --muted:#8FA3BC;
-  --gold:#B8863B;
-  --gold-hi:#D9A64F;
-  --verified:#3DBE8B;
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0B1220">
+  <title>Recoup — governance layer for failed agentic payments</title>
+  <meta name="description" content="Recoup — governance layer for failed agentic payments.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=Inter:wght@400&family=Newsreader:opsz,wght@6..72,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0B1220;
+      --hairline: #1A2436;
+      --text: #E9EEF5;
+      --muted: #8FA3BC;
+      --accent: #B8863B;
+      --verified: #3DBE8B;
+      --radius: 12px;
+      --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+      --body: "Inter", system-ui, sans-serif;
+      --title: "Newsreader", Georgia, serif;
+    }
 
-  --font-display:"Newsreader",Georgia,serif;
-  --font-ui:"Inter",system-ui,-apple-system,sans-serif;
-  --font-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,monospace;
+    * { box-sizing: border-box; }
+    html { min-height: 100%; background: var(--bg); }
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: grid;
+      place-items: center;
+      padding: 32px 20px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--body);
+      font-size: 15px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+    .case-study {
+      width: min(100%, 820px);
+      padding: 28px 30px 22px;
+      border: 1px solid var(--hairline);
+      border-radius: var(--radius);
+      background: var(--bg);
+    }
+    .meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 25px;
+      color: var(--muted);
+      font: 500 10px/1 var(--mono);
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+    .pill {
+      padding: 5px 9px;
+      border: 1px solid var(--accent);
+      border-radius: 999px;
+      color: var(--accent);
+      font: inherit;
+    }
+    h1 {
+      max-width: 18ch;
+      margin: 0;
+      color: var(--text);
+      font: 400 28px/1.16 var(--title);
+      letter-spacing: -.015em;
+      text-wrap: balance;
+    }
+    .summary {
+      max-width: 62ch;
+      margin: 18px 0 30px;
+      color: var(--text);
+      font-size: 15px;
+      line-height: 1.58;
+    }
+    .rows {
+      margin: 0;
+      border-top: 1px solid var(--hairline);
+    }
+    .row {
+      display: grid;
+      grid-template-columns: 132px minmax(0, 1fr);
+      gap: 24px;
+      padding: 17px 0 18px;
+      border-bottom: 1px solid var(--hairline);
+    }
+    dt {
+      padding-top: 3px;
+      color: var(--muted);
+      font: 500 10px/1.4 var(--mono);
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+    dd {
+      max-width: 61ch;
+      margin: 0;
+      color: var(--text);
+      line-height: 1.58;
+    }
+    .footer {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding-top: 14px;
+      color: var(--muted);
+      font: 500 11px/1.5 var(--mono);
+    }
+    .footer .hash { color: var(--accent); }
+    .footer .verified { color: var(--verified); }
 
-  --ease-out-expo:cubic-bezier(0.16,1,0.3,1);
-  --ease-quart:cubic-bezier(0.76,0,0.24,1);
-
-  --maxw:1240px;
-  --rail:44px;
-}
-
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{
-  margin:0;
-  background:var(--ink);
-  color:var(--paper);
-  font-family:var(--font-ui);
-  font-size:16px;
-  line-height:1.6;
-  -webkit-font-smoothing:antialiased;
-  font-variant-numeric:tabular-nums;
-}
-body::before{
-  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
-  background:radial-gradient(900px 500px at 78% -10%, rgba(184,134,59,0.10), transparent 60%);
-}
-.wrap{position:relative;z-index:1;max-width:var(--maxw);margin:0 auto;padding:0 24px}
-
-a{color:inherit}
-:focus-visible{outline:2px solid var(--gold-hi);outline-offset:3px}
-.label{
-  font-family:var(--font-mono);font-size:11px;letter-spacing:0.16em;
-  text-transform:uppercase;color:var(--muted);
-}
-.gold{color:var(--gold-hi)}
-
-/* ---------- top bar ---------- */
-.topbar{
-  position:sticky;top:0;z-index:20;
-  background:rgba(6,11,20,0.82);
-  backdrop-filter:blur(10px);
-  border-bottom:1px solid var(--rule);
-}
-.topbar-in{
-  max-width:var(--maxw);margin:0 auto;padding:12px 24px;
-  display:flex;align-items:center;justify-content:space-between;gap:16px;
-}
-.mark{font-family:var(--font-mono);font-size:12px;letter-spacing:0.14em;text-transform:uppercase}
-.mark span{color:var(--muted)}
-.verify-btn{
-  font-family:var(--font-mono);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;
-  background:transparent;color:var(--gold-hi);
-  border:1px solid rgba(184,134,59,0.45);border-radius:999px;
-  padding:7px 14px;cursor:pointer;
-  transition:background-color 220ms var(--ease-quart),border-color 220ms var(--ease-quart),color 220ms var(--ease-quart);
-}
-.verify-btn:hover{background:rgba(184,134,59,0.12);border-color:var(--gold)}
-.verify-btn:focus-visible{outline:2px solid var(--gold-hi);outline-offset:3px}
-.verify-btn.is-ok{color:var(--verified);border-color:rgba(61,190,139,0.5)}
-
-/* ---------- hero ---------- */
-.hero{padding:88px 0 72px;border-bottom:1px solid var(--rule)}
-.hero-split{
-  display:grid;
-  grid-template-columns:minmax(0,54rem) minmax(240px,1fr);
-  gap:40px 48px;
-  align-items:start;
-}
-.hero-copy{min-width:0}
-.hero-log{
-  min-width:0;
-  background:var(--ink-2);border:1px solid var(--rule);border-radius:12px;
-  padding:18px 18px 14px;
-}
-.hero-log-head{
-  display:flex;justify-content:space-between;align-items:baseline;gap:12px;
-  margin-bottom:14px;padding-bottom:12px;border-bottom:1px dashed var(--rule);
-}
-.hero-log-state{font-family:var(--font-mono);font-size:11px;color:var(--muted);letter-spacing:0.06em}
-.hero-log-list{list-style:none;margin:0;padding:0}
-.hero-log-list li{
-  position:relative;padding:10px 0 10px 22px;
-  border-bottom:1px solid var(--rule);
-}
-.hero-log-list li:last-child{border-bottom:none}
-.hero-log-list li::before{
-  content:"";position:absolute;left:5px;top:16px;bottom:-11px;width:1px;background:var(--rule);
-}
-.hero-log-list li:last-child::before{display:none}
-.hero-log-list li::after{
-  content:"";position:absolute;left:1px;top:18px;width:9px;height:9px;border-radius:50%;
-  background:var(--ink-2);border:1px solid var(--rule);
-}
-.hero-log-list a{
-  display:block;font-size:13px;line-height:1.35;text-decoration:none;color:var(--paper);
-  overflow-wrap:anywhere;
-}
-.hero-log-list a:hover{color:var(--gold-hi)}
-.hero-log-meta{
-  display:block;margin-top:6px;
-  font-family:var(--font-mono);font-size:10px;color:var(--muted);
-  word-break:break-all;
-}
-.hero .eyebrow{display:flex;align-items:center;gap:12px;margin-bottom:26px}
-.hero .eyebrow::after{content:"";flex:1;height:1px;background:var(--rule)}
-h1{
-  font-family:var(--font-display);
-  font-weight:300;
-  font-size:clamp(34px,6.2vw,62px);
-  line-height:1.06;
-  letter-spacing:-0.02em;
-  margin:0 0 26px;
-  max-width:19ch;
-}
-h1 em{font-style:italic;color:var(--gold-hi)}
-.sub{font-size:clamp(16px,2.2vw,19px);color:#B9C6D8;max-width:72ch;margin:0 0 32px}
-.status{
-  display:inline-flex;align-items:center;gap:10px;
-  font-family:var(--font-mono);font-size:12px;letter-spacing:0.06em;
-  border:1px solid var(--rule);border-radius:999px;padding:8px 16px;
-  background:var(--ink-2);color:#C6D3E4;
-}
-.dot{width:7px;height:7px;border-radius:50%;background:var(--verified);box-shadow:0 0 0 4px rgba(61,190,139,0.14)}
-.cta-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:34px}
-.btn{
-  display:inline-block;font-size:14px;font-weight:500;
-  padding:12px 22px;border-radius:8px;text-decoration:none;
-  transition:transform 200ms var(--ease-out-expo),background-color 200ms var(--ease-quart),border-color 200ms var(--ease-quart);
-}
-.btn-primary{background:var(--gold);color:#120C02;border:1px solid var(--gold)}
-.btn-primary:hover{background:var(--gold-hi);transform:translateY(-1px)}
-.btn-ghost{border:1px solid var(--rule);color:var(--paper)}
-.btn-ghost:hover{border-color:var(--gold);transform:translateY(-1px)}
-.btn:focus-visible{outline:2px solid var(--gold-hi);outline-offset:3px}
-
-/* ---------- section frame ---------- */
-section{padding:76px 0;border-bottom:1px solid var(--rule)}
-.sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:12px}
-.sec-head::after{content:"";flex:1;height:1px;background:var(--rule);transform:translateY(-4px)}
-h2{
-  font-family:var(--font-display);font-weight:300;
-  font-size:clamp(26px,3.6vw,36px);letter-spacing:-0.015em;margin:0 0 14px;
-}
-.sec-note{color:var(--muted);max-width:62ch;margin:0 0 40px;font-size:15px}
-
-/* ---------- ledger ---------- */
-.ledger{position:relative;padding-left:var(--rail)}
-.ledger::before{
-  content:"";position:absolute;left:11px;top:8px;bottom:8px;width:1px;
-  background:linear-gradient(180deg,transparent,var(--rule) 8%,var(--rule) 92%,transparent);
-}
-.entry{position:relative;padding:0 0 46px}
-.entry:last-child{padding-bottom:0}
-.node{
-  position:absolute;left:calc(-1 * var(--rail) + 5px);top:7px;
-  width:13px;height:13px;border-radius:50%;
-  background:var(--ink);border:1px solid var(--rule);
-  transition:border-color 300ms var(--ease-quart),box-shadow 300ms var(--ease-quart);
-}
-.entry.is-verified .node{border-color:var(--verified);box-shadow:0 0 0 4px rgba(61,190,139,0.12)}
-.entry-meta{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:10px}
-.pill{
-  font-family:var(--font-mono);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;
-  padding:4px 10px;border-radius:999px;border:1px solid var(--rule);color:var(--muted);
-}
-.pill-live{color:var(--verified);border-color:rgba(61,190,139,0.4)}
-.pill-build{color:var(--gold-hi);border-color:rgba(184,134,59,0.4)}
-.entry h3{
-  font-family:var(--font-display);font-weight:400;
-  font-size:clamp(22px,3vw,28px);margin:0 0 8px;letter-spacing:-0.01em;
-}
-.one-line{color:#B9C6D8;margin:0 0 20px;max-width:64ch}
-.ledger,.entry,.row,.hashline{min-width:0}
-.card{
-  background:var(--ink-2);border:1px solid var(--rule);border-radius:12px;
-  padding:22px 24px;
-  min-width:0;overflow-wrap:break-word;
-}
-code{overflow-wrap:anywhere;word-break:break-all}
-.rows{display:grid;gap:14px}
-.row{display:grid;grid-template-columns:132px 1fr;gap:16px;align-items:start}
-.row dt{
-  font-family:var(--font-mono);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;
-  color:var(--muted);padding-top:3px;
-}
-.row dd{margin:0;font-size:15px;color:#D3DCE9}
-dl{margin:0}
-.proof-links{display:flex;flex-wrap:wrap;gap:8px}
-.chip{
-  font-family:var(--font-mono);font-size:11px;letter-spacing:0.04em;
-  text-decoration:none;padding:5px 11px;border-radius:6px;
-  border:1px solid var(--rule);color:#C6D3E4;
-  transition:border-color 180ms var(--ease-quart),color 180ms var(--ease-quart);
-}
-.chip:hover{border-color:var(--gold);color:var(--gold-hi)}
-.chip:focus-visible{outline:2px solid var(--gold-hi);outline-offset:2px}
-.hashline{
-  display:flex;flex-wrap:wrap;align-items:center;gap:8px;
-  margin-top:18px;padding-top:14px;border-top:1px dashed var(--rule);
-  font-family:var(--font-mono);font-size:11px;color:var(--muted);
-}
-.hash{color:var(--gold-hi);word-break:break-all;min-width:0;overflow-wrap:anywhere}
-.entry.is-verified .vtag{color:var(--verified)}
-.vtag{transition:color 260ms var(--ease-quart)}
-
-/* ---------- generic grids ---------- */
-.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
-.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-.tile{background:var(--ink-2);border:1px solid var(--rule);border-radius:12px;padding:22px 24px}
-.tile h3{font-family:var(--font-ui);font-size:15px;font-weight:600;margin:0 0 8px;letter-spacing:0}
-.tile p{margin:0;color:var(--muted);font-size:14.5px}
-.stat{font-family:var(--font-mono);font-size:22px;color:var(--gold-hi);display:block;margin-bottom:6px}
-
-.stack-group{padding:18px 0;border-top:1px solid var(--rule);display:grid;grid-template-columns:150px 1fr;gap:20px}
-.stack-group:first-of-type{border-top:none}
-.stack-list{display:flex;flex-wrap:wrap;gap:8px}
-.tok{font-family:var(--font-mono);font-size:12px;color:#C6D3E4;border:1px solid var(--rule);border-radius:6px;padding:5px 10px}
-
-.about p{max-width:66ch;color:#C4D0E0;margin:0 0 16px}
-
-/* ---------- contact ---------- */
-.contact-box{
-  border:1px solid rgba(184,134,59,0.35);border-radius:14px;
-  background:linear-gradient(180deg,rgba(184,134,59,0.07),transparent);
-  padding:34px 30px;
-}
-.mail{
-  font-family:var(--font-mono);font-size:clamp(15px,3.4vw,22px);
-  color:var(--gold-hi);text-decoration:none;word-break:break-all;
-}
-.mail:hover{text-decoration:underline}
-.mail:focus-visible{outline:2px solid var(--gold-hi);outline-offset:3px}
-footer{padding:30px 0 46px;color:var(--muted);font-family:var(--font-mono);font-size:11px;letter-spacing:0.08em}
-.foot-in{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between}
-
-/* ---------- reveal ---------- */
-.reveal{opacity:0;transform:translateY(10px)}
-.reveal.in{animation:rise 460ms var(--ease-out-expo) forwards}
-@keyframes rise{to{opacity:1;transform:none}}
-
-@media (min-width:1100px){
-  .wrap,.topbar-in{padding-left:32px;padding-right:32px}
-}
-@media (max-width:760px){
-  :root{--rail:32px}
-  .grid-2,.grid-3{grid-template-columns:1fr}
-  .row{grid-template-columns:1fr;gap:4px}
-  .stack-group{grid-template-columns:1fr;gap:10px}
-  .hero{padding:60px 0 52px}
-  section{padding:56px 0}
-  .hero-split{
-    grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);
-    gap:28px 16px;
-  }
-  h1{font-size:clamp(26px,7vw,40px);max-width:none}
-  .hero-log{padding:12px 10px}
-  .hero-log-list a{
-    font-size:11px;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  }
-  .chip,.verify-btn,.mail{
-    min-height:44px;min-width:44px;
-    display:inline-flex;align-items:center;justify-content:center;
-  }
-  .topbar-in{align-items:flex-start}
-}
-@media (prefers-reduced-motion:reduce){
-  *{animation:none !important;transition:none !important}
-  .reveal{opacity:1;transform:none}
-  html{scroll-behavior:auto}
-}
-</style>
+    @media (max-width: 600px) {
+      body { padding: 16px; place-items: start center; }
+      .case-study { padding: 22px 20px 18px; }
+      .row { grid-template-columns: 1fr; gap: 7px; padding: 15px 0 16px; }
+      h1 { font-size: 27px; }
+    }
+  </style>
 </head>
 <body>
-
-<div class="topbar">
-  <div class="topbar-in">
-    <div class="mark">Aarav Sharma <span>/ aaravfractal.com</span></div>
-    <button class="verify-btn" id="verifyBtn">Verify log</button>
-  </div>
-</div>
-
-<header class="hero">
-  <div class="wrap hero-split">
-    <div class="hero-copy">
-      <div class="eyebrow label">Proof of shipping · log 001</div>
-      <h1>I build the layer that catches what <em>breaks</em> in payments.</h1>
-      <p class="sub">BTech CSE, second year. I ship production-grade recovery systems and agentic Web3 tooling — Python/FastAPI on the backend, real rails and real chains at the edge. Everything below has a live link, a deployed address, or a verifiable record. Nothing below is a tutorial clone.</p>
-      <div class="status"><span class="dot"></span> Currently shipping Recoup — Track 03, Razorpay AI Buildathon</div>
-      <div class="cta-row">
-        <a class="btn btn-primary" href="#work">See the work</a>
-        <a class="btn btn-ghost" href="#contact">Hire / collaborate</a>
-      </div>
+  <main class="case-study" aria-labelledby="case-title">
+    <div class="meta">
+      <span>2026-08 · IN BUILD</span>
+      <span class="pill">SHIPPING</span>
     </div>
-    <aside class="hero-log" aria-label="Work log index">
-      <div class="hero-log-head">
-        <span class="label">Append-only index</span>
-        <span class="hero-log-state" id="heroLogState">SHA-256 · unverified</span>
+
+    <h1 id="case-title">Recoup — governance layer for failed agentic payments</h1>
+    <p class="summary">When an AI agent's payment fails, someone has to decide whether to retry, block, or escalate — and be able to prove why later. Recoup is that decision layer.</p>
+
+    <dl class="rows">
+      <div class="row">
+        <dt>PROBLEM</dt>
+        <dd>Agentic payment stacks can retry money movement autonomously. Retry logic without a policy gate is an unbounded-spend bug waiting to happen, and without an audit trail nobody can attribute liability after the fact.</dd>
       </div>
-      <ol class="hero-log-list">
-        <li data-index>
-          <a href="#entry-recoup">Recoup — governance layer for failed agentic payments</a>
-          <span class="hero-log-meta">prev <span data-index-prev>—</span> · <span class="hash" data-index-hash>computing…</span></span>
-        </li>
-        <li data-index>
-          <a href="#entry-chainguard">ChainGuard — scam detection for crypto group chats</a>
-          <span class="hero-log-meta">prev <span data-index-prev>—</span> · <span class="hash" data-index-hash>computing…</span></span>
-        </li>
-        <li data-index>
-          <a href="#entry-payparity">PayParity — confidential salary benchmarking on FHE</a>
-          <span class="hero-log-meta">prev <span data-index-prev>—</span> · <span class="hash" data-index-hash>computing…</span></span>
-        </li>
-        <li data-index>
-          <a href="#entry-raksha">Raksha Sutra — digital safety for Indian elders</a>
-          <span class="hero-log-meta">prev <span data-index-prev>—</span> · <span class="hash" data-index-hash>computing…</span></span>
-        </li>
-      </ol>
-    </aside>
-  </div>
-</header>
-
-<section id="work">
-  <div class="wrap">
-    <div class="sec-head"><span class="label">01 — Selected work</span></div>
-    <h2>Four systems, each with proof attached</h2>
-    <p class="sec-note">This section is an append-only log. Each entry carries the hash of the one before it, so the chain is only valid if nothing above it changed. Press <strong>Verify log</strong> in the header to recompute it in your browser.</p>
-
-    <div class="ledger" id="ledger">
-
-      <article class="entry reveal" id="entry-recoup" data-entry>
-        <span class="node"></span>
-        <div class="entry-meta">
-          <span class="label">2026-08 · in build</span>
-          <span class="pill pill-build">Shipping</span>
-        </div>
-        <h3>Recoup — governance layer for failed agentic payments</h3>
-        <p class="one-line">When an AI agent's payment fails, someone has to decide whether to retry, block, or escalate — and be able to prove why later. Recoup is that decision layer.</p>
-        <div class="card">
-          <dl class="rows">
-            <div class="row"><dt>Problem</dt><dd>Agentic payment stacks can retry money movement autonomously. Retry logic without a policy gate is an unbounded-spend bug waiting to happen, and without an audit trail nobody can attribute liability after the fact.</dd></div>
-            <div class="row"><dt>Constraints</dt><dd>Solo build, 7 days, hackathon submission. No mocks on the core path — real Razorpay test-mode Orders, payment and capture.</dd></div>
-            <div class="row"><dt>Architecture</dt><dd>Python 3.11 + FastAPI + Pydantic. Deterministic policy gate in front of every money action. Append-only SQLite ledger with SHA-256 hash chaining. Exactly one LLM call, used for diagnosis only and never near execution.</dd></div>
-            <div class="row"><dt>What I owned</dt><dd>End to end — failure taxonomy, policy rules, ledger schema, hash-chain verification, dashboard, demo.</dd></div>
-            <div class="row"><dt>Honest metrics</dt><dd>The dashboard shows attempted, recovered, blocked and escalated separately, plus false-positive and false-negative rates. No 100% recovery claim — the point is that the blocked ones were blocked on purpose.</dd></div>
-          </dl>
-          <div class="hashline">
-            <span>prev</span><span class="hash" data-prev>—</span>
-            <span>·</span><span>sha256</span><span class="hash" data-hash>computing…</span>
-            <span class="vtag" data-vtag>· unverified</span>
-          </div>
-        </div>
-      </article>
-
-      <article class="entry reveal" id="entry-chainguard" data-entry>
-        <span class="node"></span>
-        <div class="entry-meta">
-          <span class="label">2026-08 · live</span>
-          <span class="pill pill-live">Deployed on Polygon mainnet</span>
-        </div>
-        <h3>ChainGuard — scam detection for crypto group chats</h3>
-        <p class="one-line">A Telegram bot that reads links and contract addresses posted in crypto groups and tells the group, in the thread, whether they're known bad.</p>
-        <div class="card">
-          <dl class="rows">
-            <div class="row"><dt>Problem</dt><dd>Scam links and drainer contracts spread fastest in the seconds before anyone checks them. By the time a warning is posted manually, people have already clicked.</dd></div>
-            <div class="row"><dt>Architecture</dt><dd>Python (python-telegram-bot) for detection, Google Safe Browsing plus a local blacklist for links, a persistent JSON registry so a scam seen once is re-flagged forever, and a Solidity <code>ScamRegistry</code> contract on Polygon mainnet — verified — written to via web3.py so reports are public and shared.</dd></div>
-            <div class="row"><dt>What I owned</dt><dd>Whole thing, solo. Started as a coursework requirement that only needed a two-page document; the working bot was the part I actually wanted to build.</dd></div>
-            <div class="row"><dt>What went wrong</dt><dd>I leaked a private key into the repo during the mainnet deploy. I caught it, moved funds off the wallet immediately, untracked the <code>.env</code>, and now treat that wallet as permanently burned. Secrets handling on every project since starts from that lesson.</dd></div>
-          </dl>
-          <div class="proof-links" style="margin-top:18px">
-            <a class="chip" href="#" data-todo>GitHub repo →</a>
-            <a class="chip" href="#" data-todo>ScamRegistry on Polygonscan →</a>
-          </div>
-          <div class="hashline">
-            <span>prev</span><span class="hash" data-prev>—</span>
-            <span>·</span><span>sha256</span><span class="hash" data-hash>computing…</span>
-            <span class="vtag" data-vtag>· unverified</span>
-          </div>
-        </div>
-      </article>
-
-      <article class="entry reveal" id="entry-payparity" data-entry>
-        <span class="node"></span>
-        <div class="entry-meta">
-          <span class="label">2026 · live on Sepolia</span>
-          <span class="pill pill-live">Submitted — Zama Season 3</span>
-        </div>
-        <h3>PayParity — confidential salary benchmarking on FHE</h3>
-        <p class="one-line">Compare your salary against the market without anyone — including the contract — ever seeing your number.</p>
-        <div class="card">
-          <dl class="rows">
-            <div class="row"><dt>Problem</dt><dd>Salary benchmarking is useful precisely because it's comparative, and impossible to do safely because it's personal. Plaintext on-chain is a non-starter.</dd></div>
-            <div class="row"><dt>Architecture</dt><dd>Fully homomorphic encryption on Zama's stack — comparisons run on encrypted values, so aggregate answers come back without the inputs ever being decrypted. Deployed to Sepolia at <code>0x063D78A28F677B7D5Da59f8650F94EB739E57175</code>.</dd></div>
-            <div class="row"><dt>What I owned</dt><dd>Solo build and submission to the Zama Developer Program, Season 3 Builder Track.</dd></div>
-            <div class="row"><dt>Why it matters</dt><dd>It's the clearest proof I can point to that I can work at the cryptography layer, not just call an SDK.</dd></div>
-          </dl>
-          <div class="proof-links" style="margin-top:18px">
-            <a class="chip" href="https://sepolia.etherscan.io/address/0x063D78A28F677B7D5Da59f8650F94EB739E57175">Contract on Sepolia →</a>
-            <a class="chip" href="#" data-todo>GitHub repo →</a>
-          </div>
-          <div class="hashline">
-            <span>prev</span><span class="hash" data-prev>—</span>
-            <span>·</span><span>sha256</span><span class="hash" data-hash>computing…</span>
-            <span class="vtag" data-vtag>· unverified</span>
-          </div>
-        </div>
-      </article>
-
-      <article class="entry reveal" id="entry-raksha" data-entry>
-        <span class="node"></span>
-        <div class="entry-meta">
-          <span class="label">2026 · live</span>
-          <span class="pill pill-live">Deployed on Railway</span>
-        </div>
-        <h3>Raksha Sutra — digital safety for Indian elders</h3>
-        <p class="one-line">An AI assistant that helps older users in India recognise the scam before they act on it, in language they actually use.</p>
-        <div class="card">
-          <dl class="rows">
-            <div class="row"><dt>Problem</dt><dd>Elders are the highest-value target for UPI and OTP fraud in India and the least served by security tooling, which is written for people who already know the vocabulary.</dd></div>
-            <div class="row"><dt>Constraints</dt><dd>Built for a Design Thinking course with Madhav Nauriyal — which meant the interface had to survive testing with actual non-technical users, not just work.</dd></div>
-            <div class="row"><dt>What I owned</dt><dd>Build and deployment; shipped live on Railway rather than left as a prototype.</dd></div>
-          </dl>
-          <div class="proof-links" style="margin-top:18px">
-            <a class="chip" href="#" data-todo>Live app →</a>
-            <a class="chip" href="#" data-todo>GitHub repo →</a>
-          </div>
-          <div class="hashline">
-            <span>prev</span><span class="hash" data-prev>—</span>
-            <span>·</span><span>sha256</span><span class="hash" data-hash>computing…</span>
-            <span class="vtag" data-vtag>· unverified</span>
-          </div>
-        </div>
-      </article>
-
-    </div>
-  </div>
-</section>
-
-<section id="think">
-  <div class="wrap">
-    <div class="sec-head"><span class="label">02 — How I think</span></div>
-    <h2>Three rules I build by</h2>
-    <p class="sec-note">Taken from things that actually went wrong, not from a blog post.</p>
-    <div class="grid-3">
-      <div class="tile reveal">
-        <h3>A system that can move money needs a gate it cannot argue with</h3>
-        <p>LLMs diagnose. Deterministic rules execute. The moment those two swap places you have an unbounded-spend bug, and no amount of prompt engineering fixes it.</p>
+      <div class="row">
+        <dt>CONSTRAINTS</dt>
+        <dd>Solo build, 7 days, hackathon submission. No mocks on the core path — real Razorpay test-mode Orders, payment and capture.</dd>
       </div>
-      <div class="tile reveal">
-        <h3>If you can't prove it afterwards, it didn't happen</h3>
-        <p>Append-only logs, hash chains, named liability on every event. Recovery is worthless if nobody can reconstruct who decided what.</p>
+      <div class="row">
+        <dt>ARCHITECTURE</dt>
+        <dd>Python 3.11 + FastAPI + Pydantic. Deterministic policy gate in front of every money action. Append-only SQLite ledger with SHA-256 hash chaining. Exactly one LLM call, used for diagnosis only and never near execution.</dd>
       </div>
-      <div class="tile reveal">
-        <h3>Report the failures at the same size as the wins</h3>
-        <p>I show blocked and escalated counts next to recovered ones. A dashboard that only reports success is a dashboard nobody should trust.</p>
+      <div class="row">
+        <dt>WHAT I OWNED</dt>
+        <dd>End to end — failure taxonomy, policy rules, ledger schema, hash-chain verification, dashboard, demo.</dd>
       </div>
-    </div>
-  </div>
-</section>
-
-<section id="signal">
-  <div class="wrap">
-    <div class="sec-head"><span class="label">03 — Distribution & competition</span></div>
-    <h2>I can build it and I can get people to look at it</h2>
-    <p class="sec-note">Most engineers have one of these. The DevRel case is that I've been doing both since I was sixteen.</p>
-    <div class="grid-2">
-      <div class="tile reveal">
-        <span class="stat">500+</span>
-        <h3>Deals closed running Crypto Japans</h3>
-        <p>Web3 marketing agency I've run since 2021 — KOL campaigns and long-standing work with Binance, BC Game and BetFury. Client-facing, deadline-facing, revenue-facing since school.</p>
+      <div class="row">
+        <dt>HONEST METRICS</dt>
+        <dd>The dashboard shows attempted, recovered, blocked and escalated separately, plus false-positive and false-negative rates. No 100% recovery claim — the point is that the blocked ones were blocked on purpose.</dd>
       </div>
-      <div class="tile reveal">
-        <span class="stat">1st / 800+</span>
-        <h3>Zerodha × FIC national startup challenge</h3>
-        <p>Also 1st at Dehradun Chapters 2026 (E-Cell IIT Bombay / TBI-GEU) with VitaSync AI, and 3rd in AlgoVision at COMET'26, IIT Roorkee.</p>
-      </div>
-      <div class="tile reveal">
-        <h3>Knowledge &amp; Research Head, Finance &amp; Investment Cell</h3>
-        <p>GEHU, 2026–27 term. I publish institutional-style research notes — the first covered the NSE F&amp;O market close extension.</p>
-      </div>
-      <div class="tile reveal">
-        <h3>StayingAhead — writing and video</h3>
-        <p>My own media brand: newsletter, YouTube and X. Technical explainers for a markets and Web3 audience, written and edited by me.</p>
-      </div>
-    </div>
-  </div>
-</section>
+    </dl>
 
-<section id="stack">
-  <div class="wrap">
-    <div class="sec-head"><span class="label">04 — Stack</span></div>
-    <h2>What I actually use</h2>
-    <p class="sec-note">Listed only where I've shipped something with it.</p>
-    <div class="stack-group"><span class="label">Backend</span><div class="stack-list">
-      <span class="tok">Python 3.11</span><span class="tok">FastAPI</span><span class="tok">Pydantic</span><span class="tok">SQLite</span><span class="tok">REST APIs</span>
-    </div></div>
-    <div class="stack-group"><span class="label">On-chain</span><div class="stack-list">
-      <span class="tok">Solidity</span><span class="tok">web3.py</span><span class="tok">Polygon</span><span class="tok">Sepolia</span><span class="tok">Zama FHE</span><span class="tok">Etherscan verification</span>
-    </div></div>
-    <div class="stack-group"><span class="label">Frontend</span><div class="stack-list">
-      <span class="tok">HTML / CSS</span><span class="tok">JavaScript</span><span class="tok">React</span><span class="tok">Design systems</span>
-    </div></div>
-    <div class="stack-group"><span class="label">Payments &amp; infra</span><div class="stack-list">
-      <span class="tok">Razorpay Orders / Capture</span><span class="tok">Railway</span><span class="tok">Vercel</span><span class="tok">Git</span>
-    </div></div>
-    <div class="stack-group"><span class="label">AI tooling</span><div class="stack-list">
-      <span class="tok">Claude / Claude Code</span><span class="tok">Cursor</span><span class="tok">LLM-in-the-loop design</span>
-    </div></div>
-  </div>
-</section>
-
-<section id="about" class="about">
-  <div class="wrap">
-    <div class="sec-head"><span class="label">05 — About</span></div>
-    <h2>Short version</h2>
-    <p>I'm Aarav Sharma, from Ayodhya, currently in my second year of BTech CSE at Graphic Era Hill University in Dehradun. I started in Web3 at sixteen by building an audience and selling campaigns, which taught me distribution before it taught me code. The engineering came after, and it stuck.</p>
-    <p>What I'm aiming at now is fintech product engineering — payment infrastructure, recovery and reconciliation, the systems that decide what happens when the happy path fails. That's why Recoup exists, and it's why the projects above look less like demos and more like small pieces of infrastructure.</p>
-    <p>Outside of that: markets research for my college's Finance &amp; Investment Cell, a lot of hackathons, and a media brand I run myself.</p>
-  </div>
-</section>
-
-<section id="contact">
-  <div class="wrap">
-    <div class="sec-head"><span class="label">06 — Contact</span></div>
-    <div class="contact-box">
-      <h2 style="margin-bottom:10px">Open to software, DevRel and Web3 builder roles</h2>
-      <p style="color:#C4D0E0;max-width:56ch;margin:0 0 22px">Internships, contract work, or a hackathon team. Fastest way to reach me is email — I reply the same day.</p>
-      <a class="mail" href="mailto:aarav@aaravfractal.com">aarav@aaravfractal.com</a>
-      <div class="proof-links" style="margin-top:24px">
-        <a class="chip" href="#" data-todo>GitHub →</a>
-        <a class="chip" href="#" data-todo>X →</a>
-        <a class="chip" href="#" data-todo>LinkedIn →</a>
-        <a class="chip" href="#" data-todo>Résumé (PDF) →</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<footer>
-  <div class="wrap foot-in">
-    <span>aaravfractal.com — built and deployed by Aarav Sharma</span>
-    <span id="chainState">Chain: unverified</span>
-  </div>
-</footer>
-
-<script>
-(function(){
-  const entries = Array.from(document.querySelectorAll('[data-entry]'));
-  const btn = document.getElementById('verifyBtn');
-  const chainState = document.getElementById('chainState');
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  function textOf(el){
-    return el.querySelector('h3').textContent.trim() + '|' + el.querySelector('.one-line').textContent.trim();
-  }
-
-  async function sha256(str){
-    if(!(window.crypto && window.crypto.subtle)) return null;
-    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
-    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
-  }
-
-  async function buildChain(){
-    let prev = '0'.repeat(64);
-    for(const el of entries){
-      const payload = prev + '|' + textOf(el);
-      const h = await sha256(payload);
-      const short = h ? h.slice(0,16) : 'unavailable';
-      el.querySelector('[data-prev]').textContent = prev === '0'.repeat(64) ? 'genesis' : prev.slice(0,10);
-      el.querySelector('[data-hash]').textContent = short;
-      el.dataset.hash = h || '';
-      prev = h || prev;
-    }
-  }
-
-  async function verify(){
-    btn.disabled = true;
-    btn.textContent = 'Verifying…';
-    entries.forEach(e => { e.classList.remove('is-verified'); e.querySelector('[data-vtag]').textContent = '· unverified'; });
-    let prev = '0'.repeat(64), ok = true;
-    for(const el of entries){
-      const expected = await sha256(prev + '|' + textOf(el));
-      const match = expected && expected === el.dataset.hash;
-      if(!match) ok = false;
-      el.classList.toggle('is-verified', !!match);
-      el.querySelector('[data-vtag]').textContent = match ? '· verified' : '· mismatch';
-      prev = el.dataset.hash;
-      if(!reduce) await new Promise(r => setTimeout(r, 220));
-    }
-    btn.textContent = ok ? 'Chain verified' : 'Chain broken';
-    btn.classList.toggle('is-ok', ok);
-    chainState.textContent = ok ? 'Chain: verified — ' + entries.length + ' entries' : 'Chain: mismatch';
-    btn.disabled = false;
-  }
-
-  function syncHeroLog(){
-    document.querySelectorAll('[data-index]').forEach((row, i) => {
-      const el = entries[i];
-      if(!el) return;
-      const prev = row.querySelector('[data-index-prev]');
-      const hash = row.querySelector('[data-index-hash]');
-      if(prev) prev.textContent = el.querySelector('[data-prev]').textContent;
-      if(hash) hash.textContent = el.querySelector('[data-hash]').textContent;
-    });
-    const state = document.getElementById('heroLogState');
-    if(state && chainState){
-      state.textContent = chainState.textContent.replace(/^Chain:\s*/, '');
-    }
-  }
-
-  btn.addEventListener('click', () => { verify().then(syncHeroLog); });
-  buildChain().then(syncHeroLog);
-
-  const io = new IntersectionObserver((list) => {
-    list.forEach(x => { if(x.isIntersecting){ x.target.classList.add('in'); io.unobserve(x.target); } });
-  }, { rootMargin: '0px 0px -12% 0px' });
-  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
-
-  document.querySelectorAll('[data-todo]').forEach(a => {
-    a.addEventListener('click', e => { e.preventDefault(); a.textContent = 'add link in index.html'; });
-  });
-})();
-</script>
+    <footer class="footer">
+      <span>prev 7040ca1777</span>
+      <span>·</span>
+      <span>sha256 <span class="hash">2af09cfa63ea608b</span></span>
+      <span>·</span>
+      <span class="verified">verified</span>
+    </footer>
+  </main>
 </body>
 </html>
