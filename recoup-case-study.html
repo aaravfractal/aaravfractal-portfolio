@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0B1220">
+  <title>Recoup — governance layer for failed agentic payments</title>
+  <meta name="description" content="Recoup — governance layer for failed agentic payments.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=Inter:wght@400&family=Newsreader:opsz,wght@6..72,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0B1220;
+      --hairline: #1A2436;
+      --text: #E9EEF5;
+      --muted: #8FA3BC;
+      --accent: #B8863B;
+      --verified: #3DBE8B;
+      --radius: 12px;
+      --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+      --body: "Inter", system-ui, sans-serif;
+      --title: "Newsreader", Georgia, serif;
+    }
+
+    * { box-sizing: border-box; }
+    html { min-height: 100%; background: var(--bg); }
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: grid;
+      place-items: center;
+      padding: 32px 20px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--body);
+      font-size: 15px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+    .case-study {
+      width: min(100%, 820px);
+      padding: 28px 30px 22px;
+      border: 1px solid var(--hairline);
+      border-radius: var(--radius);
+      background: var(--bg);
+    }
+    .meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 25px;
+      color: var(--muted);
+      font: 500 10px/1 var(--mono);
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+    .pill {
+      padding: 5px 9px;
+      border: 1px solid var(--accent);
+      border-radius: 999px;
+      color: var(--accent);
+      font: inherit;
+    }
+    h1 {
+      max-width: 18ch;
+      margin: 0;
+      color: var(--text);
+      font: 400 28px/1.16 var(--title);
+      letter-spacing: -.015em;
+      text-wrap: balance;
+    }
+    .summary {
+      max-width: 62ch;
+      margin: 18px 0 30px;
+      color: var(--text);
+      font-size: 15px;
+      line-height: 1.58;
+    }
+    .rows {
+      margin: 0;
+      border-top: 1px solid var(--hairline);
+    }
+    .row {
+      display: grid;
+      grid-template-columns: 132px minmax(0, 1fr);
+      gap: 24px;
+      padding: 17px 0 18px;
+      border-bottom: 1px solid var(--hairline);
+    }
+    dt {
+      padding-top: 3px;
+      color: var(--muted);
+      font: 500 10px/1.4 var(--mono);
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+    dd {
+      max-width: 61ch;
+      margin: 0;
+      color: var(--text);
+      line-height: 1.58;
+    }
+    .footer {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding-top: 14px;
+      color: var(--muted);
+      font: 500 11px/1.5 var(--mono);
+    }
+    .footer .hash { color: var(--accent); }
+    .footer .verified { color: var(--verified); }
+
+    @media (max-width: 600px) {
+      body { padding: 16px; place-items: start center; }
+      .case-study { padding: 22px 20px 18px; }
+      .row { grid-template-columns: 1fr; gap: 7px; padding: 15px 0 16px; }
+      h1 { font-size: 27px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="case-study" aria-labelledby="case-title">
+    <div class="meta">
+      <span>2026-08 · IN BUILD</span>
+      <span class="pill">SHIPPING</span>
+    </div>
+
+    <h1 id="case-title">Recoup — governance layer for failed agentic payments</h1>
+    <p class="summary">When an AI agent's payment fails, someone has to decide whether to retry, block, or escalate — and be able to prove why later. Recoup is that decision layer.</p>
+
+    <dl class="rows">
+      <div class="row">
+        <dt>PROBLEM</dt>
+        <dd>Agentic payment stacks can retry money movement autonomously. Retry logic without a policy gate is an unbounded-spend bug waiting to happen, and without an audit trail nobody can attribute liability after the fact.</dd>
+      </div>
+      <div class="row">
+        <dt>CONSTRAINTS</dt>
+        <dd>Solo build, 7 days, hackathon submission. No mocks on the core path — real Razorpay test-mode Orders, payment and capture.</dd>
+      </div>
+      <div class="row">
+        <dt>ARCHITECTURE</dt>
+        <dd>Python 3.11 + FastAPI + Pydantic. Deterministic policy gate in front of every money action. Append-only SQLite ledger with SHA-256 hash chaining. Exactly one LLM call, used for diagnosis only and never near execution.</dd>
+      </div>
+      <div class="row">
+        <dt>WHAT I OWNED</dt>
+        <dd>End to end — failure taxonomy, policy rules, ledger schema, hash-chain verification, dashboard, demo.</dd>
+      </div>
+      <div class="row">
+        <dt>HONEST METRICS</dt>
+        <dd>The dashboard shows attempted, recovered, blocked and escalated separately, plus false-positive and false-negative rates. No 100% recovery claim — the point is that the blocked ones were blocked on purpose.</dd>
+      </div>
+    </dl>
+
+    <footer class="footer">
+      <span>prev 7040ca1777</span>
+      <span>·</span>
+      <span>sha256 <span class="hash">2af09cfa63ea608b</span></span>
+      <span>·</span>
+      <span class="verified">verified</span>
+    </footer>
+  </main>
+</body>
+</html>

@@ -1,165 +1,583 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0B1220">
-  <title>Recoup — governance layer for failed agentic payments</title>
-  <meta name="description" content="Recoup — governance layer for failed agentic payments.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=Inter:wght@400&family=Newsreader:opsz,wght@6..72,400&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg: #0B1220;
-      --hairline: #1A2436;
-      --text: #E9EEF5;
-      --muted: #8FA3BC;
-      --accent: #B8863B;
-      --verified: #3DBE8B;
-      --radius: 12px;
-      --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-      --body: "Inter", system-ui, sans-serif;
-      --title: "Newsreader", Georgia, serif;
-    }
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<meta name="description" content="Raksha Sutra — Digital safety suite protecting Indian elders from scams, fake news and fraud."/>
+<meta name="theme-color" content="#b91c1c"/>
+<meta property="og:title" content="Raksha Sutra — Your Digital Guardian"/>
+<meta property="og:description" content="Verify news, payments, job offers and links. Built to protect Indian elders."/>
+<title>Raksha Sutra — Your Digital Guardian</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:'DM Sans',sans-serif;background:#fffafa;color:#1e1b1b;min-height:100vh;-webkit-font-smoothing:antialiased}
+button,textarea,input{font-family:'DM Sans',sans-serif;-webkit-appearance:none;appearance:none}
+a{color:inherit;text-decoration:none}
 
-    * { box-sizing: border-box; }
-    html { min-height: 100%; background: var(--bg); }
-    body {
-      min-height: 100vh;
-      margin: 0;
-      display: grid;
-      place-items: center;
-      padding: 32px 20px;
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--body);
-      font-size: 15px;
-      line-height: 1.55;
-      -webkit-font-smoothing: antialiased;
-    }
-    .case-study {
-      width: min(100%, 820px);
-      padding: 28px 30px 22px;
-      border: 1px solid var(--hairline);
-      border-radius: var(--radius);
-      background: var(--bg);
-    }
-    .meta {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 25px;
-      color: var(--muted);
-      font: 500 10px/1 var(--mono);
-      letter-spacing: .14em;
-      text-transform: uppercase;
-    }
-    .pill {
-      padding: 5px 9px;
-      border: 1px solid var(--accent);
-      border-radius: 999px;
-      color: var(--accent);
-      font: inherit;
-    }
-    h1 {
-      max-width: 18ch;
-      margin: 0;
-      color: var(--text);
-      font: 400 28px/1.16 var(--title);
-      letter-spacing: -.015em;
-      text-wrap: balance;
-    }
-    .summary {
-      max-width: 62ch;
-      margin: 18px 0 30px;
-      color: var(--text);
-      font-size: 15px;
-      line-height: 1.58;
-    }
-    .rows {
-      margin: 0;
-      border-top: 1px solid var(--hairline);
-    }
-    .row {
-      display: grid;
-      grid-template-columns: 132px minmax(0, 1fr);
-      gap: 24px;
-      padding: 17px 0 18px;
-      border-bottom: 1px solid var(--hairline);
-    }
-    dt {
-      padding-top: 3px;
-      color: var(--muted);
-      font: 500 10px/1.4 var(--mono);
-      letter-spacing: .14em;
-      text-transform: uppercase;
-    }
-    dd {
-      max-width: 61ch;
-      margin: 0;
-      color: var(--text);
-      line-height: 1.58;
-    }
-    .footer {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      padding-top: 14px;
-      color: var(--muted);
-      font: 500 11px/1.5 var(--mono);
-    }
-    .footer .hash { color: var(--accent); }
-    .footer .verified { color: var(--verified); }
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes menuIn{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:scale(1)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+.fade-up{animation:fadeUp .38s ease both}
+.pulse{animation:pulse 1.2s ease-in-out infinite}
 
-    @media (max-width: 600px) {
-      body { padding: 16px; place-items: start center; }
-      .case-study { padding: 22px 20px 18px; }
-      .row { grid-template-columns: 1fr; gap: 7px; padding: 15px 0 16px; }
-      h1 { font-size: 27px; }
-    }
-  </style>
+/* ── LAYOUT ── */
+#app{min-height:100vh;background:#fffafa}
+.main{max-width:860px;margin:0 auto;padding:1.25rem 1rem 6.5rem}
+.page{display:flex;flex-direction:column;gap:18px}
+
+/* ── TOP NAV ── */
+.nav{position:sticky;top:0;z-index:50;background:rgba(255,250,250,.92);
+  -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
+  border-bottom:1px solid #fecaca;padding:.75rem 1rem;
+  display:flex;align-items:center;justify-content:space-between}
+.nav-brand{background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:9px;padding:0;-webkit-tap-highlight-color:transparent}
+.nav-logo{background:#b91c1c;border-radius:9px;padding:6px 7px;font-size:.95rem;line-height:1}
+.nav-name{font-family:'Syne',sans-serif;font-weight:800;font-size:.97rem;color:#1e1b1b;line-height:1}
+.nav-tag{font-size:.5rem;font-weight:700;color:#b91c1c;text-transform:uppercase;letter-spacing:.14em;font-family:'IBM Plex Mono',monospace}
+.menu-btn{background:#fff1f2;border:1px solid #fecaca;border-radius:50%;width:37px;height:37px;cursor:pointer;font-size:.95rem;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent}
+
+/* ── FULL MENU ── */
+.fullmenu{position:fixed;inset:0;z-index:40;background:rgba(255,250,250,.97);
+  -webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:13px;
+  animation:menuIn .25s ease both}
+.menu-item{border:1.5px solid #e5e7eb;border-radius:17px;padding:.9rem 2.5rem;
+  font-family:'Syne',sans-serif;font-weight:700;font-size:1.05rem;cursor:pointer;
+  color:#1e1b1b;width:215px;display:flex;align-items:center;gap:11px;-webkit-tap-highlight-color:transparent}
+.menu-close{background:#b91c1c;color:white;border:none;border-radius:13px;
+  padding:.85rem 3rem;font-family:'Syne',sans-serif;font-weight:700;
+  font-size:.95rem;cursor:pointer;margin-top:8px;-webkit-tap-highlight-color:transparent}
+
+/* ── BOTTOM NAV ── */
+.bnav{position:fixed;bottom:13px;left:50%;transform:translateX(-50%);
+  width:min(90%,410px);background:rgba(255,250,250,.94);
+  -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
+  border-radius:17px;border:1.5px solid #fecaca;padding:.48rem .65rem;
+  display:flex;justify-content:space-around;align-items:center;
+  box-shadow:0 8px 30px rgba(185,28,28,.12);z-index:50}
+.bnav-btn{background:transparent;border:none;border-radius:11px;padding:6px 13px;
+  cursor:pointer;font-size:1.1rem;display:flex;flex-direction:column;
+  align-items:center;gap:2px;-webkit-tap-highlight-color:transparent;transition:background .18s}
+.bnav-btn.active{background:#b91c1c}
+.bnav-btn .bl{font-size:.48rem;color:#9ca3af;font-weight:700;
+  font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.06em}
+.bnav-btn.active .bl{color:white}
+
+/* ── CARDS & COMMON ── */
+.card{background:white;border-radius:18px;padding:1.4rem;border:1.5px solid #e5e7eb}
+.card-red{background:#fff1f2;border:1.5px solid #fecaca;border-radius:22px;padding:1.4rem}
+.lbl{font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.13em;color:#b91c1c;font-family:'IBM Plex Mono',monospace}
+.h2{font-family:'Syne',sans-serif;font-weight:800;font-size:1.45rem;color:#1e1b1b}
+.h3{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;color:#1e1b1b}
+.muted{font-size:.83rem;color:#6b7280;line-height:1.65}
+.row{display:flex;align-items:center;justify-content:space-between}
+
+/* ── BUTTONS ── */
+.btn-red{background:#b91c1c;color:white;border:none;border-radius:13px;
+  padding:.82rem 1.35rem;font-weight:700;cursor:pointer;font-size:.9rem;
+  font-family:'Syne',sans-serif;display:inline-flex;align-items:center;gap:7px;
+  -webkit-tap-highlight-color:transparent;transition:opacity .15s}
+.btn-red:active{opacity:.85}
+.btn-full{width:100%;justify-content:center}
+.btn-ghost{background:transparent;color:#b91c1c;border:1.5px solid #fecaca;
+  border-radius:11px;padding:.52rem .95rem;font-weight:700;cursor:pointer;
+  font-size:.8rem;font-family:'Syne',sans-serif;display:inline-flex;
+  align-items:center;gap:6px;-webkit-tap-highlight-color:transparent}
+.btn-white{background:white;color:#b91c1c;border:none;border-radius:13px;
+  padding:.82rem 1.35rem;font-weight:700;cursor:pointer;font-size:.9rem;
+  font-family:'Syne',sans-serif;display:inline-flex;align-items:center;gap:7px}
+.btn-glass{background:rgba(255,255,255,.15);color:white;
+  border:1px solid rgba(255,255,255,.3);border-radius:13px;
+  padding:.82rem 1.35rem;font-weight:700;cursor:pointer;font-size:.9rem;
+  font-family:'Syne',sans-serif;display:inline-flex;align-items:center;gap:7px}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(135deg,#b91c1c 0%,#7f1d1d 100%);
+  border-radius:26px;padding:2.4rem 1.9rem;color:white;
+  position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50px;right:-50px;
+  width:190px;height:190px;border-radius:50%;background:rgba(255,255,255,.05)}
+.hero-inner{position:relative;z-index:1}
+.hero-badge{display:inline-block;background:rgba(255,255,255,.15);border-radius:100px;
+  padding:.22rem .82rem;font-size:.6rem;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;margin-bottom:11px;font-family:'IBM Plex Mono',monospace}
+.hero-title{font-family:'Syne',sans-serif;font-weight:800;
+  font-size:clamp(1.55rem,4vw,2.1rem);line-height:1.15;margin-bottom:9px}
+.hero-desc{font-size:.92rem;opacity:.85;line-height:1.7;margin-bottom:20px;max-width:410px}
+.hero-btns{display:flex;gap:11px;flex-wrap:wrap}
+
+/* ── SCAM GRID ── */
+.scam-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(195px,1fr));gap:11px}
+.scam-card{background:white;border-radius:14px;padding:.95rem;border:1px solid #fecaca}
+.scam-badge{background:#b91c1c;color:white;font-size:.56rem;font-weight:700;
+  padding:2px 7px;border-radius:100px;text-transform:uppercase;letter-spacing:.06em}
+.scam-title{font-weight:700;font-size:.83rem;margin:7px 0 4px;color:#1e1b1b}
+.scam-desc{font-size:.76rem;color:#6b7280;margin-bottom:7px;line-height:1.52}
+.scam-tip{font-size:.73rem;color:#9f1239;font-weight:700;background:#fff1f2;padding:5px 7px;border-radius:7px}
+
+/* ── MODULE GRID ── */
+.mod-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:11px}
+.mod-card{background:white;border:1.5px solid #e5e7eb;border-radius:17px;
+  padding:1.15rem .95rem;cursor:pointer;text-align:left;
+  -webkit-tap-highlight-color:transparent;transition:border-color .18s}
+.mod-card:active{border-color:#fca5a5}
+.mod-icon{border-radius:11px;width:40px;height:40px;display:flex;align-items:center;
+  justify-content:center;font-size:1.2rem;margin-bottom:9px}
+.mod-label{font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;color:#1e1b1b}
+.mod-desc{font-size:.72rem;color:#9ca3af;margin-top:2px}
+
+/* ── ANALYSIS INPUT ── */
+textarea.ana{width:100%;min-height:135px;padding:.95rem;border-radius:13px;
+  border:1.5px solid #e5e7eb;background:#f8fafc;font-size:.93rem;
+  resize:vertical;outline:none;line-height:1.65;color:#1e1b1b;display:block;
+  transition:border-color .2s}
+textarea.ana:focus{border-color:#b91c1c}
+.img-drop{height:105px;border-radius:13px;border:2px dashed #d1d5db;
+  background:#f8fafc;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;overflow:hidden;-webkit-tap-highlight-color:transparent}
+.img-drop.has{border-color:#b91c1c;background:#fff1f2}
+.img-drop img{max-height:100%;object-fit:contain;border-radius:9px}
+.err-box{background:#fff1f2;border:1px solid #fecaca;border-radius:9px;
+  padding:.65rem .95rem;color:#9f1239;font-size:.83rem;font-weight:600;
+  display:flex;align-items:center;gap:7px;margin-bottom:14px}
+
+/* ── CSS GAUGE (no Recharts) ── */
+.gauge-wrap{display:flex;flex-direction:column;align-items:center;padding:1.4rem 1.4rem 0}
+.gauge-ring{width:158px;height:80px;position:relative;overflow:hidden}
+.gauge-bg{width:158px;height:158px;border-radius:50%;
+  position:absolute;top:0;left:0;background:#fee2e2}
+.gauge-fill{width:158px;height:158px;border-radius:50%;position:absolute;top:0;left:0}
+.gauge-mask{width:138px;height:138px;border-radius:50%;background:white;
+  position:absolute;top:10px;left:10px}
+.gauge-txt{position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+  text-align:center;white-space:nowrap}
+.gauge-pct{font-family:'Syne',sans-serif;font-size:1.65rem;font-weight:900;line-height:1}
+.gauge-lbl{font-size:.57rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:.12em;color:#9ca3af}
+.verdict-pill{width:100%;border-radius:11px;padding:.72rem;text-align:center;
+  font-weight:800;font-size:.86rem;font-family:'Syne',sans-serif;
+  color:white;margin-top:13px}
+
+/* ── RESULT ── */
+.care-box{background:linear-gradient(135deg,#b91c1c,#7f1d1d);border-radius:18px;
+  padding:1.4rem;color:white;display:flex;gap:13px;align-items:flex-start}
+.care-icon{background:rgba(255,255,255,.2);border-radius:11px;
+  padding:9px 11px;flex-shrink:0;font-size:1.35rem}
+.result-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:15px}
+.findings-list{list-style:none;padding:0;display:flex;flex-direction:column;gap:9px}
+.finding-item{display:flex;gap:9px;align-items:flex-start}
+.finding-dot{width:6px;height:6px;border-radius:50%;background:#dc2626;flex-shrink:0;margin-top:6px}
+.finding-text{font-size:.86rem;color:#374151;line-height:1.58;font-weight:500}
+
+/* ── HUB / HELP / GUIDE ── */
+.hub-card{display:flex;gap:13px;align-items:flex-start;border-left:4px solid #b91c1c}
+.hub-fire{background:#fff1f2;border-radius:11px;padding:.65rem;font-size:1.35rem;flex-shrink:0}
+.safety-tip{background:rgba(185,28,28,.06);border-left:3px solid #b91c1c;
+  padding:.5rem .82rem;border-radius:0 9px 9px 0;font-weight:700;color:#7f1d1d;font-size:.8rem}
+.emerg-box{background:linear-gradient(135deg,#b91c1c,#7f1d1d);border-radius:18px;
+  padding:1.65rem;color:white;text-align:center}
+.emerg-num{display:block;background:rgba(255,255,255,.18);border-radius:13px;
+  padding:.8rem;font-size:1.9rem;font-weight:800;font-family:'Syne',sans-serif;
+  letter-spacing:.08em;color:white;margin-top:15px}
+.step-item{display:flex;gap:11px;align-items:flex-start;padding:.55rem 0;border-bottom:1px solid #f3f4f6}
+.step-item:last-child{border-bottom:none}
+.step-num{background:#b91c1c;color:white;border-radius:50%;width:21px;height:21px;
+  display:flex;align-items:center;justify-content:center;font-size:.65rem;
+  font-weight:700;flex-shrink:0;margin-top:2px}
+.step-text{font-size:.86rem;color:#374151;line-height:1.65}
+.upi-rule{border-left:4px solid #b91c1c}
+.gov-links{display:flex;flex-direction:column;gap:9px}
+.gov-link{display:flex;justify-content:space-between;align-items:center;
+  padding:.82rem .95rem;background:#f8fafc;border-radius:11px;
+  border:1px solid #e5e7eb;-webkit-tap-highlight-color:transparent}
+.gov-name{font-weight:700;font-size:.86rem}
+.gov-desc{font-size:.73rem;color:#6b7280;margin-top:2px}
+.gov-arr{color:#b91c1c;font-size:.88rem;flex-shrink:0;margin-left:7px}
+
+/* ── ABOUT / WHY ── */
+.quote-box{background:#fff1f2;border-left:4px solid #b91c1c;
+  padding:.95rem 1.2rem;border-radius:0 13px 13px 0}
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:13px}
+.feature-card{text-align:center;padding:1.4rem .95rem}
+</style>
 </head>
 <body>
-  <main class="case-study" aria-labelledby="case-title">
-    <div class="meta">
-      <span>2026-08 · IN BUILD</span>
-      <span class="pill">SHIPPING</span>
-    </div>
+<div id="app"></div>
 
-    <h1 id="case-title">Recoup — governance layer for failed agentic payments</h1>
-    <p class="summary">When an AI agent's payment fails, someone has to decide whether to retry, block, or escalate — and be able to prove why later. Recoup is that decision layer.</p>
+<script>
+// ── DATA ─────────────────────────────────────────────────────────────────────
+var P={HOME:'HOME',NEWS:'NEWS',PAY:'PAY',MEET:'MEET',JOB:'JOB',
+       HUB:'HUB',HELP:'HELP',GUIDE:'GUIDE',ABOUT:'ABOUT',WHY:'WHY'};
 
-    <dl class="rows">
-      <div class="row">
-        <dt>PROBLEM</dt>
-        <dd>Agentic payment stacks can retry money movement autonomously. Retry logic without a policy gate is an unbounded-spend bug waiting to happen, and without an audit trail nobody can attribute liability after the fact.</dd>
-      </div>
-      <div class="row">
-        <dt>CONSTRAINTS</dt>
-        <dd>Solo build, 7 days, hackathon submission. No mocks on the core path — real Razorpay test-mode Orders, payment and capture.</dd>
-      </div>
-      <div class="row">
-        <dt>ARCHITECTURE</dt>
-        <dd>Python 3.11 + FastAPI + Pydantic. Deterministic policy gate in front of every money action. Append-only SQLite ledger with SHA-256 hash chaining. Exactly one LLM call, used for diagnosis only and never near execution.</dd>
-      </div>
-      <div class="row">
-        <dt>WHAT I OWNED</dt>
-        <dd>End to end — failure taxonomy, policy rules, ledger schema, hash-chain verification, dashboard, demo.</dd>
-      </div>
-      <div class="row">
-        <dt>HONEST METRICS</dt>
-        <dd>The dashboard shows attempted, recovered, blocked and escalated separately, plus false-positive and false-negative rates. No 100% recovery claim — the point is that the blocked ones were blocked on purpose.</dd>
-      </div>
-    </dl>
+var SCAMS=[
+  {title:"🚨 'Digital Arrest' Scam",danger:'HIGH',
+   desc:"Scammers pose as CBI/Police on video calls, claiming you're under Digital Arrest for an illegal package.",
+   action:'Hang up! Police never arrest via Skype or WhatsApp.'},
+  {title:'📦 FedEx / Courier Phishing',danger:'MEDIUM',
+   desc:"Call says your package is seized by customs — pay clearance fees immediately.",
+   action:'Never pay customs via UPI to individuals. Check official tracking.'},
+  {title:'⚡ Electricity Bill Threat',danger:'HIGH',
+   desc:'SMS warning power will be cut unless you call a number to update your bill.',
+   action:'Use only official apps like Tata Power, BSES, or your state board.'},
+  {title:'🏆 KBC / Lottery Fraud',danger:'HIGH',
+   desc:"WhatsApp says you won ₹25 lakh in KBC. They ask for 'registration fees' to release your prize.",
+   action:'KBC never asks for money to claim a prize. Block the number.'},
+  {title:'💳 Bank KYC Expiry Scam',danger:'HIGH',
+   desc:"SMS says account will be blocked unless you update KYC by clicking a link.",
+   action:'Banks never ask for OTP via SMS link. Visit your branch directly.'},
+];
 
-    <footer class="footer">
-      <span>prev 7040ca1777</span>
-      <span>·</span>
-      <span>sha256 <span class="hash">2af09cfa63ea608b</span></span>
-      <span>·</span>
-      <span class="verified">verified</span>
-    </footer>
-  </main>
+var GOV=[
+  {name:'Cyber Crime Reporting Portal',url:'https://cybercrime.gov.in',desc:'Official GOI portal to file cyber complaints.'},
+  {name:'RBI Kehta Hai',url:'https://rbikehtahai.rbi.org.in',desc:"RBI's official digital safety awareness site."},
+  {name:'CERT-In (Cyber Emergency)',url:'https://www.cert-in.org.in',desc:'National nodal agency for cyber security.'},
+  {name:'NPCI Safety Portal',url:'https://www.npci.org.in',desc:'Official guidelines for UPI and card safety.'},
+];
+
+var MODS=[
+  {id:P.NEWS,label:'Verify News',icon:'📰',color:'#dc2626',desc:'Is this viral news real?'},
+  {id:P.PAY, label:'Scan QR / Bill',icon:'💳',color:'#be185d',desc:'Is this payment safe?'},
+  {id:P.MEET,label:'Meeting Link',icon:'🎥',color:'#7f1d1d',desc:'Check Zoom/Meet safety'},
+  {id:P.JOB, label:'Job Offer',icon:'💼',color:'#374151',desc:'Verify work offers'},
+];
+
+var RISK_CFG={
+  LOW:   {bg:'#f0fdf4',border:'#bbf7d0',icon:'✅',vbg:'#059669',clr:'#059669'},
+  MEDIUM:{bg:'#fffbeb',border:'#fde68a',icon:'⚠️',vbg:'#d97706',clr:'#d97706'},
+  HIGH:  {bg:'#fff1f2',border:'#fecdd3',icon:'🚨',vbg:'#dc2626',clr:'#dc2626'},
+};
+
+// ── STATE ──────────────────────��──────────────────────────────────────────────
+var state={page:P.HOME,menu:false,result:null,loading:false,error:'',text:'',img:null};
+
+function set(patch){state=Object.assign({},state,patch);render();}
+function isAna(){return [P.NEWS,P.PAY,P.MEET,P.JOB].includes(state.page);}
+
+// ── ANALYSIS — calls Anthropic API via claude.ai proxy ────────────────────────
+var PROMPTS={
+  NEWS:'You are a fact-checking expert for Indian news. Analyze if this is fake, misleading, or real. Focus on WhatsApp forwards, political misinformation, fake government schemes.',
+  PAY:'You are a digital payment security expert for India. Analyze if this UPI ID, QR code, or payment request is a scam.',
+  MEET:'You are a cybersecurity expert. Analyze if this meeting link or video call invitation is safe, phishing, or a Digital Arrest scam.',
+  JOB:'You are a job fraud detection expert for India. Analyze if this job offer or work-from-home opportunity is legitimate or fraud.',
+};
+
+async function analyze(){
+  if(!state.text&&!state.img){set({error:'Please provide content to verify.'});return;}
+  set({loading:true,error:'',result:null});
+  var sys=PROMPTS[state.page]||'You are a digital security expert for India.';
+  sys+='\nYou protect Indian senior citizens from online fraud.\nRespond ONLY with valid JSON — no markdown, no text outside the JSON:\n{"headline":"max 8 word verdict","summary":"2-3 simple sentences for a senior citizen","riskFactor":"LOW"|"MEDIUM"|"HIGH","riskScore":0-100,"reasons":["r1","r2","r3"],"verdict":"Safe to proceed"|"Proceed with caution"|"This is a SCAM — Stop immediately","careMessage":"warm 1-2 sentence advisory for an elder"}';
+  var content=[];
+  if(state.img){
+    var b64=state.img.includes(',')?state.img.split(',')[1]:state.img;
+    content.push({type:'image',source:{type:'base64',media_type:'image/jpeg',data:b64}});
+  }
+  content.push({type:'text',text:state.text||'Analyze this for security threats.'});
+  try{
+    var res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:sys,messages:[{role:'user',content:content}]})
+    });
+    if(!res.ok)throw new Error('AI error');
+    var data=await res.json();
+    var raw=data.content&&data.content[0]?data.content[0].text:'{}';
+    var result=JSON.parse(raw.replace(/```json\n?|```\n?/g,'').trim());
+    set({loading:false,result:result,error:''});
+  }catch(e){
+    set({loading:false,error:'Analysis failed. Please try again.'});
+  }
+}
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+function nav(pg){set({page:pg,menu:false,result:null,error:'',text:'',img:null,loading:false});}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function gaugeHTML(score,level){
+  var rc=RISK_CFG[level]||RISK_CFG.HIGH;
+  var deg=Math.round(score*1.8);
+  return '<div class="gauge-wrap">'
+    +'<div class="gauge-ring">'
+    +'<div class="gauge-bg"></div>'
+    +'<div class="gauge-fill" style="background:conic-gradient(from 180deg,'+rc.clr+' 0deg,'+rc.clr+' '+deg+'deg,transparent '+deg+'deg)"></div>'
+    +'<div class="gauge-mask"></div>'
+    +'<div class="gauge-txt">'
+    +'<div class="gauge-pct" style="color:'+rc.clr+'">'+score+'%</div>'
+    +'<div class="gauge-lbl">Threat Risk</div>'
+    +'</div>'
+    +'</div>'
+    +'</div>';
+}
+
+// ── PAGE BUILDERS ─────────────────────────────────────────────────────────────
+
+function homeHTML(){
+  return '<div class="page fade-up">'
+    // Hero
+    +'<div class="hero"><div class="hero-inner">'
+    +'<div class="hero-badge">Elder Protection Network</div>'
+    +'<div class="hero-title">Safety in Every Tap.</div>'
+    +'<div class="hero-desc">Protect your digital life from threats. Verify messages, videos and links — stay safe from scams.</div>'
+    +'<div class="hero-btns">'
+    +'<button class="btn-white" onclick="nav(\''+P.HELP+'\')">🚨 Emergency Support</button>'
+    +'<button class="btn-glass" onclick="nav(\''+P.HUB+'\')">📡 Latest Alerts</button>'
+    +'</div></div></div>'
+    // Scam alerts
+    +'<div class="card-red">'
+    +'<div style="display:flex;align-items:center;gap:9px;margin-bottom:14px">'
+    +'<span style="font-size:1.15rem">📣</span><div class="h3">Breaking Scam Alerts</div></div>'
+    +'<div class="scam-grid">'
+    +SCAMS.slice(0,3).map(function(a){
+      return '<div class="scam-card">'
+        +'<span class="scam-badge">'+a.danger+' RISK</span>'
+        +'<div class="scam-title">'+esc(a.title)+'</div>'
+        +'<div class="scam-desc">'+esc(a.desc)+'</div>'
+        +'<div class="scam-tip">"'+esc(a.action)+'"</div>'
+        +'</div>';
+    }).join('')
+    +'</div>'
+    +'<button class="btn-ghost" style="margin-top:13px" onclick="nav(\''+P.HUB+'\')">View All Alerts →</button>'
+    +'</div>'
+    // Modules
+    +'<div>'
+    +'<div class="lbl" style="margin-bottom:5px">Protective Analysis</div>'
+    +'<div class="h2" style="margin-bottom:13px">🛡️ What do you want to verify?</div>'
+    +'<div class="mod-grid">'
+    +MODS.map(function(m){
+      return '<button class="mod-card" onclick="nav(\''+m.id+'\')">'
+        +'<div class="mod-icon" style="background:'+m.color+'">'+m.icon+'</div>'
+        +'<div class="mod-label">'+m.label+'</div>'
+        +'<div class="mod-desc">'+m.desc+'</div>'
+        +'</button>';
+    }).join('')
+    +'</div></div>'
+    +'</div>';
+}
+
+function analysisInputHTML(){
+  var mod=MODS.find(function(m){return m.id===state.page;})||MODS[0];
+  return '<div class="card fade-up" style="padding:1.9rem;position:relative">'
+    +'<button class="btn-ghost" style="position:absolute;top:15px;right:15px" onclick="nav(\''+P.HOME+'\')">← Back</button>'
+    +'<div style="display:flex;align-items:center;gap:11px;margin-bottom:5px">'
+    +'<div class="mod-icon" style="background:'+mod.color+';flex-shrink:0">'+mod.icon+'</div>'
+    +'<div class="h2">'+mod.label+'</div></div>'
+    +'<div class="muted" style="margin-bottom:22px">Share the details you want me to check.</div>'
+    +'<div style="margin-bottom:14px">'
+    +'<div class="lbl" style="margin-bottom:7px">Paste the content here:</div>'
+    +'<textarea class="ana" id="anaText" placeholder="Paste message, link, description, or UPI ID...">'+esc(state.text)+'</textarea></div>'
+    +'<div style="margin-bottom:18px">'
+    +'<div class="lbl" style="margin-bottom:7px">Attach a photo (Optional):</div>'
+    +'<div class="img-drop '+(state.img?'has':'')+'" id="imgDrop" onclick="document.getElementById(\'fileIn\').click()">'
+    +(state.img
+      ?'<img src="'+state.img+'" alt="preview"/>'
+      :'<div style="text-align:center;color:#9ca3af"><div style="font-size:1.35rem;margin-bottom:3px">📎</div><div style="font-size:.76rem;font-weight:600">Add Image / Screenshot</div></div>')
+    +'</div>'
+    +'<input type="file" id="fileIn" accept="image/*" style="display:none" onchange="handleFile(this)"/></div>'
+    +(state.error?'<div class="err-box">⚠️ '+esc(state.error)+'</div>':'')
+    +'<button class="btn-red btn-full" onclick="doAnalyze()" '
+    +(state.loading||(!state.text&&!state.img)?'style="opacity:.55;cursor:not-allowed" disabled':'')+' >'
+    +(state.loading?'<span class="pulse">⏳</span> Checking with AI...':'🔍 Analyze Safety Now →')
+    +'</button></div>';
+}
+
+function resultHTML(){
+  var r=state.result;
+  if(!r)return'';
+  var rc=RISK_CFG[r.riskFactor]||RISK_CFG.HIGH;
+  return '<div class="page fade-up">'
+    +(r.riskFactor!=='LOW'
+      ?'<div class="care-box"><div class="care-icon">🛡️</div>'
+        +'<div><div style="font-family:\'Syne\',sans-serif;font-weight:800;font-size:.97rem;margin-bottom:3px">Expert Protective Advice</div>'
+        +'<div style="font-size:.92rem;opacity:.9;font-style:italic;line-height:1.62">"'+esc(r.careMessage)+'"</div></div></div>'
+      :'')
+    +'<div style="background:'+rc.bg+';border:2px solid '+rc.border+';border-radius:22px;padding:1.85rem;text-align:center">'
+    +'<div style="font-size:2.4rem;margin-bottom:9px">'+rc.icon+'</div>'
+    +'<div style="font-family:\'Syne\',sans-serif;font-weight:800;font-size:1.35rem;color:#1e1b1b;margin-bottom:9px">'+esc(r.headline)+'</div>'
+    +'<div style="font-size:.92rem;color:#374151;line-height:1.72;max-width:490px;margin:0 auto">'+esc(r.summary)+'</div>'
+    +'</div>'
+    +'<div class="result-grid">'
+    +'<div class="card" style="display:flex;flex-direction:column;align-items:center">'
+    +gaugeHTML(r.riskScore,r.riskFactor)
+    +'<div class="verdict-pill" style="background:'+rc.vbg+'">'+esc(r.verdict)+'</div>'
+    +'</div>'
+    +'<div class="card"><div class="h3" style="margin-bottom:13px">🔍 Security Findings</div>'
+    +'<ul class="findings-list">'
+    +r.reasons.map(function(rr){
+      return '<li class="finding-item"><div class="finding-dot"></div>'
+        +'<span class="finding-text">'+esc(rr)+'</span></li>';
+    }).join('')
+    +'</ul></div></div>'
+    +'<button class="btn-red btn-full" onclick="set({result:null,text:\'\',img:null,error:\'\'})">🔄 Analyze Something Else</button>'
+    +'</div>';
+}
+
+function hubHTML(){
+  return '<div class="page fade-up">'
+    +'<div class="row"><button class="btn-ghost" onclick="nav(\''+P.HOME+'\')">← Back</button><div class="h2">Scam Awareness Hub</div></div>'
+    +SCAMS.map(function(a){
+      return '<div class="card hub-card"><div class="hub-fire">🔥</div>'
+        +'<div><div style="display:flex;align-items:center;gap:7px;margin-bottom:5px;flex-wrap:wrap">'
+        +'<div class="h3">'+esc(a.title)+'</div>'
+        +'<span style="background:#fef3c7;color:#78350f;font-size:.56rem;font-weight:700;padding:2px 7px;border-radius:100px;text-transform:uppercase">Verified Threat</span>'
+        +'</div>'
+        +'<div style="font-size:.88rem;color:#374151;line-height:1.62;margin-bottom:9px">'+esc(a.desc)+'</div>'
+        +'<div class="safety-tip">Safety Tip: '+esc(a.action)+'</div>'
+        +'</div></div>';
+    }).join('')
+    +'</div>';
+}
+
+function helpHTML(){
+  var steps=['Call 1930 (Cyber Crime Helpline) within the first hour.',
+    'Report at cybercrime.gov.in with all details and screenshots.',
+    'Contact your bank immediately to freeze or reverse the transaction.',
+    'Do NOT make more payments even if they threaten you.',
+    'Save all call records, screenshots, and transaction IDs.'];
+  return '<div class="page fade-up">'
+    +'<div class="row"><button class="btn-ghost" onclick="nav(\''+P.HOME+'\')">← Back</button><div class="h2">Emergency Support</div></div>'
+    +'<div class="emerg-box">'
+    +'<div style="font-size:1.9rem;margin-bottom:7px">🆘</div>'
+    +'<div style="font-family:\'Syne\',sans-serif;font-weight:800;font-size:1.15rem;margin-bottom:5px">Been Scammed? Act Immediately.</div>'
+    +'<div style="opacity:.85;font-size:.86rem;margin-bottom:0">Call the National Cyber Crime Helpline</div>'
+    +'<a href="tel:1930" class="emerg-num">📞 1930</a>'
+    +'</div>'
+    +'<div class="card"><div class="h3" style="margin-bottom:13px">🔒 Immediate Steps After a Scam</div>'
+    +steps.map(function(s,i){
+      return '<div class="step-item"><div class="step-num">'+(i+1)+'</div>'
+        +'<div class="step-text">'+esc(s)+'</div></div>';
+    }).join('')
+    +'</div></div>';
+}
+
+function guideHTML(){
+  return '<div class="page fade-up">'
+    +'<div class="row"><button class="btn-ghost" onclick="nav(\''+P.HOME+'\')">← Back</button><div class="h2">📖 Safety Playbook</div></div>'
+    +'<div class="card upi-rule"><div class="h3" style="margin-bottom:9px">📱 UPI Golden Rule</div>'
+    +'<div style="font-size:.9rem;color:#374151;line-height:1.75">Entering your <strong style="color:#b91c1c">UPI PIN</strong> always means money is <strong>leaving</strong> your account. Receiving money <strong>NEVER</strong> requires a PIN. If someone asks you to enter your PIN to receive money — hang up immediately, it\'s a scam.</div>'
+    +'</div>'
+    +'<div class="card"><div class="h3" style="margin-bottom:13px">🏛️ Official Government Channels</div>'
+    +'<div class="gov-links">'
+    +GOV.map(function(l){
+      return '<a href="'+l.url+'" target="_blank" rel="noopener noreferrer" class="gov-link">'
+        +'<div><div class="gov-name">'+esc(l.name)+'</div><div class="gov-desc">'+esc(l.desc)+'</div></div>'
+        +'<span class="gov-arr">↗</span></a>';
+    }).join('')
+    +'</div></div></div>';
+}
+
+function aboutHTML(){
+  return '<div class="card fade-up" style="padding:1.9rem;position:relative">'
+    +'<button class="btn-ghost" style="position:absolute;top:15px;right:15px" onclick="nav(\''+P.HOME+'\')">← Back</button>'
+    +'<div class="lbl" style="margin-bottom:5px">The Team</div>'
+    +'<div class="h2" style="margin-bottom:7px">About the Creators</div>'
+    +'<div style="font-family:\'Syne\',sans-serif;font-weight:700;font-size:1.2rem;color:#b91c1c;margin-bottom:3px">Madhav Nauriyal & Aarav Sharma</div>'
+    +'<div style="font-weight:600;color:#374151;margin-bottom:3px">1st Year B.Tech Undergraduates</div>'
+    +'<div style="font-size:.72rem;color:#9ca3af;font-family:\'IBM Plex Mono\',monospace;text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px">Graphic Era University, Dehradun</div>'
+    +'<div style="font-size:.9rem;color:#374151;line-height:1.78;margin-bottom:18px">Raksha Sutra was founded by Madhav and Aarav, two passionate engineering students who saw the urgent need for a digital safety net for Indian elders. This app protects senior citizens from the rapidly growing threat of digital fraud in India.</div>'
+    +'<div class="quote-box"><div style="font-style:italic;font-weight:600;color:#7f1d1d;line-height:1.72;font-size:.9rem">"Engineering is most powerful when it serves those who are most vulnerable. This is our contribution to a safer Bharat."</div></div>'
+    +'</div>';
+}
+
+function whyHTML(){
+  var features=[
+    {icon:'🛡️',title:'India-Nuance AI',desc:'Trained to detect local scams like KBC lottery and Digital Arrest — not just generic global threats.'},
+    {icon:'👁️',title:'High Legibility',desc:'Interface tuned for elder vision health and maximum readability on any screen size.'},
+    {icon:'🏛️',title:'Govt Pathways',desc:'Seamless links to official Indian reporting portals and the 1930 helpline.'},
+  ];
+  return '<div class="page fade-up">'
+    +'<div class="row"><button class="btn-ghost" onclick="nav(\''+P.HOME+'\')">← Back</button><div class="h2">✨ Why Raksha Sutra</div></div>'
+    +'<div class="card" style="text-align:center;padding:1.65rem">'
+    +'<div style="font-size:.92rem;color:#374151;line-height:1.78;font-style:italic;max-width:490px;margin:0 auto">"Raksha Sutra is surgically precise — engineered specifically for the Indian elder. We decode the exact triggers used by local scammers, not generic global threats."</div>'
+    +'</div>'
+    +'<div class="features-grid">'
+    +features.map(function(f){
+      return '<div class="card feature-card">'
+        +'<div style="font-size:1.75rem;margin-bottom:7px">'+f.icon+'</div>'
+        +'<div style="font-family:\'Syne\',sans-serif;font-weight:700;font-size:.9rem;margin-bottom:5px">'+f.title+'</div>'
+        +'<div style="font-size:.78rem;color:#6b7280;line-height:1.58">'+esc(f.desc)+'</div>'
+        +'</div>';
+    }).join('')
+    +'</div></div>';
+}
+
+// ── TOP NAV HTML ──────────────────────────────────────────────────────────────
+function navHTML(){
+  return '<nav class="nav">'
+    +'<button class="nav-brand" onclick="nav(\''+P.HOME+'\')">'
+    +'<div class="nav-logo">🛡️</div>'
+    +'<div><div class="nav-name">Raksha Sutra</div><div class="nav-tag">Security Suite</div></div>'
+    +'</button>'
+    +'<button class="menu-btn" onclick="set({menu:!state.menu})">'+(state.menu?'✕':'☰')+'</button>'
+    +'</nav>'
+    +(state.menu
+      ?'<div class="fullmenu">'
+        +'<button class="menu-item" style="background:#fff1f2" onclick="nav(\''+P.ABOUT+'\')" ><span style="font-size:1.35rem">👥</span>About Us</button>'
+        +'<button class="menu-item" style="background:#fffbeb" onclick="nav(\''+P.WHY+'\')"><span style="font-size:1.35rem">✨</span>Why Us</button>'
+        +'<button class="menu-item" style="background:#eff6ff" onclick="nav(\''+P.GUIDE+'\')"><span style="font-size:1.35rem">📖</span>Playbook</button>'
+        +'<button class="menu-close" onclick="set({menu:false})">Close</button>'
+        +'</div>'
+      :'');
+}
+
+// ── BOTTOM NAV HTML ───────────────────────────────────────────────────────────
+function bnavHTML(){
+  var tabs=[
+    {pg:P.HOME,icon:'🛡️',lbl:'Home'},
+    {pg:P.HUB, icon:'📡',lbl:'Alerts'},
+    {pg:P.HELP,icon:'🆘',lbl:'Help'},
+    {pg:P.GUIDE,icon:'📖',lbl:'Guide'},
+  ];
+  return '<nav class="bnav">'
+    +tabs.map(function(t){
+      return '<button class="bnav-btn '+(state.page===t.pg&&!state.menu?'active':'')+'" onclick="nav(\''+t.pg+'\')">'
+        +t.icon+'<span class="bl">'+t.lbl+'</span></button>';
+    }).join('')
+    +'</nav>';
+}
+
+// ── MAIN RENDER ───────────────────────────────────────────────────────────────
+function mainHTML(){
+  if(state.page===P.HOME) return homeHTML();
+  if(isAna()&&state.result) return resultHTML();
+  if(isAna()) return analysisInputHTML();
+  if(state.page===P.HUB)  return hubHTML();
+  if(state.page===P.HELP) return helpHTML();
+  if(state.page===P.GUIDE)return guideHTML();
+  if(state.page===P.ABOUT)return aboutHTML();
+  if(state.page===P.WHY)  return whyHTML();
+  return homeHTML();
+}
+
+function render(){
+  document.getElementById('app').innerHTML=
+    navHTML()
+    +'<div class="main">'+mainHTML()+'</div>'
+    +bnavHTML();
+  // re-bind textarea
+  var ta=document.getElementById('anaText');
+  if(ta)ta.addEventListener('input',function(e){state.text=e.target.value;});
+}
+
+// ── ACTIONS ───────────────────────────────────────────────────────────────────
+function handleFile(input){
+  var f=input.files&&input.files[0];
+  if(!f)return;
+  var reader=new FileReader();
+  reader.onload=function(e){set({img:e.target.result});};
+  reader.readAsDataURL(f);
+}
+function doAnalyze(){
+  var ta=document.getElementById('anaText');
+  if(ta)state.text=ta.value;
+  analyze();
+}
+
+// ── START ─────────────────────────────────────────────────────────────────────
+render();
+</script>
 </body>
 </html>
