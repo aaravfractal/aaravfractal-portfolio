@@ -11,7 +11,7 @@
 <meta property="og:url" content="https://aaravfractal.com">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,400;0,500;1,6..72,300&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
 <style>
 :root{
   --ink:#060B14;
@@ -19,7 +19,7 @@
   --ink-3:#101A2B;
   --rule:#1A2436;
   --paper:#E9EEF5;
-  --muted:#8095AF;
+  --muted:#8FA3BC;
   --gold:#B8863B;
   --gold-hi:#D9A64F;
   --verified:#3DBE8B;
@@ -31,7 +31,7 @@
   --ease-out-expo:cubic-bezier(0.16,1,0.3,1);
   --ease-quart:cubic-bezier(0.76,0,0.24,1);
 
-  --maxw:1080px;
+  --maxw:1240px;
   --rail:44px;
 }
 
@@ -54,6 +54,7 @@ body::before{
 .wrap{position:relative;z-index:1;max-width:var(--maxw);margin:0 auto;padding:0 24px}
 
 a{color:inherit}
+:focus-visible{outline:2px solid var(--gold-hi);outline-offset:3px}
 .label{
   font-family:var(--font-mono);font-size:11px;letter-spacing:0.16em;
   text-transform:uppercase;color:var(--muted);
@@ -86,6 +87,47 @@ a{color:inherit}
 
 /* ---------- hero ---------- */
 .hero{padding:88px 0 72px;border-bottom:1px solid var(--rule)}
+.hero-split{
+  display:grid;
+  grid-template-columns:minmax(0,54rem) minmax(240px,1fr);
+  gap:40px 48px;
+  align-items:start;
+}
+.hero-copy{min-width:0}
+.hero-log{
+  min-width:0;
+  background:var(--ink-2);border:1px solid var(--rule);border-radius:12px;
+  padding:18px 18px 14px;
+}
+.hero-log-head{
+  display:flex;justify-content:space-between;align-items:baseline;gap:12px;
+  margin-bottom:14px;padding-bottom:12px;border-bottom:1px dashed var(--rule);
+}
+.hero-log-state{font-family:var(--font-mono);font-size:11px;color:var(--muted);letter-spacing:0.06em}
+.hero-log-list{list-style:none;margin:0;padding:0}
+.hero-log-list li{
+  position:relative;padding:10px 0 10px 22px;
+  border-bottom:1px solid var(--rule);
+}
+.hero-log-list li:last-child{border-bottom:none}
+.hero-log-list li::before{
+  content:"";position:absolute;left:5px;top:16px;bottom:-11px;width:1px;background:var(--rule);
+}
+.hero-log-list li:last-child::before{display:none}
+.hero-log-list li::after{
+  content:"";position:absolute;left:1px;top:18px;width:9px;height:9px;border-radius:50%;
+  background:var(--ink-2);border:1px solid var(--rule);
+}
+.hero-log-list a{
+  display:block;font-size:13px;line-height:1.35;text-decoration:none;color:var(--paper);
+  overflow-wrap:anywhere;
+}
+.hero-log-list a:hover{color:var(--gold-hi)}
+.hero-log-meta{
+  display:block;margin-top:6px;
+  font-family:var(--font-mono);font-size:10px;color:var(--muted);
+  word-break:break-all;
+}
 .hero .eyebrow{display:flex;align-items:center;gap:12px;margin-bottom:26px}
 .hero .eyebrow::after{content:"";flex:1;height:1px;background:var(--rule)}
 h1{
@@ -98,7 +140,7 @@ h1{
   max-width:19ch;
 }
 h1 em{font-style:italic;color:var(--gold-hi)}
-.sub{font-size:clamp(16px,2.2vw,19px);color:#B9C6D8;max-width:60ch;margin:0 0 32px}
+.sub{font-size:clamp(16px,2.2vw,19px);color:#B9C6D8;max-width:72ch;margin:0 0 32px}
 .status{
   display:inline-flex;align-items:center;gap:10px;
   font-family:var(--font-mono);font-size:12px;letter-spacing:0.06em;
@@ -155,10 +197,13 @@ h2{
   font-size:clamp(22px,3vw,28px);margin:0 0 8px;letter-spacing:-0.01em;
 }
 .one-line{color:#B9C6D8;margin:0 0 20px;max-width:64ch}
+.ledger,.entry,.row,.hashline{min-width:0}
 .card{
   background:var(--ink-2);border:1px solid var(--rule);border-radius:12px;
   padding:22px 24px;
+  min-width:0;overflow-wrap:break-word;
 }
+code{overflow-wrap:anywhere;word-break:break-all}
 .rows{display:grid;gap:14px}
 .row{display:grid;grid-template-columns:132px 1fr;gap:16px;align-items:start}
 .row dt{
@@ -181,7 +226,7 @@ dl{margin:0}
   margin-top:18px;padding-top:14px;border-top:1px dashed var(--rule);
   font-family:var(--font-mono);font-size:11px;color:var(--muted);
 }
-.hash{color:var(--gold-hi);word-break:break-all}
+.hash{color:var(--gold-hi);word-break:break-all;min-width:0;overflow-wrap:anywhere}
 .entry.is-verified .vtag{color:var(--verified)}
 .vtag{transition:color 260ms var(--ease-quart)}
 
@@ -189,7 +234,7 @@ dl{margin:0}
 .grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
 .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
 .tile{background:var(--ink-2);border:1px solid var(--rule);border-radius:12px;padding:22px 24px}
-.tile h4{font-family:var(--font-ui);font-size:15px;font-weight:600;margin:0 0 8px}
+.tile h3{font-family:var(--font-ui);font-size:15px;font-weight:600;margin:0 0 8px;letter-spacing:0}
 .tile p{margin:0;color:var(--muted);font-size:14.5px}
 .stat{font-family:var(--font-mono);font-size:22px;color:var(--gold-hi);display:block;margin-bottom:6px}
 
@@ -211,6 +256,7 @@ dl{margin:0}
   color:var(--gold-hi);text-decoration:none;word-break:break-all;
 }
 .mail:hover{text-decoration:underline}
+.mail:focus-visible{outline:2px solid var(--gold-hi);outline-offset:3px}
 footer{padding:30px 0 46px;color:var(--muted);font-family:var(--font-mono);font-size:11px;letter-spacing:0.08em}
 .foot-in{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between}
 
@@ -219,6 +265,9 @@ footer{padding:30px 0 46px;color:var(--muted);font-family:var(--font-mono);font-
 .reveal.in{animation:rise 460ms var(--ease-out-expo) forwards}
 @keyframes rise{to{opacity:1;transform:none}}
 
+@media (min-width:1100px){
+  .wrap,.topbar-in{padding-left:32px;padding-right:32px}
+}
 @media (max-width:760px){
   :root{--rail:32px}
   .grid-2,.grid-3{grid-template-columns:1fr}
@@ -226,6 +275,21 @@ footer{padding:30px 0 46px;color:var(--muted);font-family:var(--font-mono);font-
   .stack-group{grid-template-columns:1fr;gap:10px}
   .hero{padding:60px 0 52px}
   section{padding:56px 0}
+  .hero-split{
+    grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);
+    gap:28px 16px;
+  }
+  h1{font-size:clamp(26px,7vw,40px);max-width:none}
+  .hero-log{padding:12px 10px}
+  .hero-log-list a{
+    font-size:11px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .chip,.verify-btn,.mail{
+    min-height:44px;min-width:44px;
+    display:inline-flex;align-items:center;justify-content:center;
+  }
+  .topbar-in{align-items:flex-start}
 }
 @media (prefers-reduced-motion:reduce){
   *{animation:none !important;transition:none !important}
@@ -244,15 +308,41 @@ footer{padding:30px 0 46px;color:var(--muted);font-family:var(--font-mono);font-
 </div>
 
 <header class="hero">
-  <div class="wrap">
-    <div class="eyebrow label">Proof of shipping · log 001</div>
-    <h1>I build the layer that catches what <em>breaks</em> in payments.</h1>
-    <p class="sub">BTech CSE, second year. I ship production-grade recovery systems and agentic Web3 tooling — Python/FastAPI on the backend, real rails and real chains at the edge. Everything below has a live link, a deployed address, or a verifiable record. Nothing below is a tutorial clone.</p>
-    <div class="status"><span class="dot"></span> Currently shipping Recoup — Track 03, Razorpay AI Buildathon</div>
-    <div class="cta-row">
-      <a class="btn btn-primary" href="#work">See the work</a>
-      <a class="btn btn-ghost" href="#contact">Hire / collaborate</a>
+  <div class="wrap hero-split">
+    <div class="hero-copy">
+      <div class="eyebrow label">Proof of shipping · log 001</div>
+      <h1>I build the layer that catches what <em>breaks</em> in payments.</h1>
+      <p class="sub">BTech CSE, second year. I ship production-grade recovery systems and agentic Web3 tooling — Python/FastAPI on the backend, real rails and real chains at the edge. Everything below has a live link, a deployed address, or a verifiable record. Nothing below is a tutorial clone.</p>
+      <div class="status"><span class="dot"></span> Currently shipping Recoup — Track 03, Razorpay AI Buildathon</div>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="#work">See the work</a>
+        <a class="btn btn-ghost" href="#contact">Hire / collaborate</a>
+      </div>
     </div>
+    <aside class="hero-log" aria-label="Work log index">
+      <div class="hero-log-head">
+        <span class="label">Append-only index</span>
+        <span class="hero-log-state" id="heroLogState">SHA-256 · unverified</span>
+      </div>
+      <ol class="hero-log-list">
+        <li data-index>
+          <a href="#entry-recoup">Recoup — governance layer for failed agentic payments</a>
+          <span class="hero-log-meta">prev <span data-index-prev>—</span> · <span class="hash" data-index-hash>computing…</span></span>
+        </li>
+        <li data-index>
+          <a href="#entry-chainguard">ChainGuard — scam detection for crypto group chats</a>
+          <span class="hero-log-meta">prev <span data-index-prev>—</span> · <span class="hash" data-index-hash>computing…</span></span>
+        </li>
+        <li data-index>
+          <a href="#entry-payparity">PayParity — confidential salary benchmarking on FHE</a>
+          <span class="hero-log-meta">prev <span data-index-prev>—</span> · <span class="hash" data-index-hash>computing…</span></span>
+        </li>
+        <li data-index>
+          <a href="#entry-raksha">Raksha Sutra — digital safety for Indian elders</a>
+          <span class="hero-log-meta">prev <span data-index-prev>—</span> · <span class="hash" data-index-hash>computing…</span></span>
+        </li>
+      </ol>
+    </aside>
   </div>
 </header>
 
@@ -264,7 +354,7 @@ footer{padding:30px 0 46px;color:var(--muted);font-family:var(--font-mono);font-
 
     <div class="ledger" id="ledger">
 
-      <article class="entry reveal" data-entry>
+      <article class="entry reveal" id="entry-recoup" data-entry>
         <span class="node"></span>
         <div class="entry-meta">
           <span class="label">2026-08 · in build</span>
@@ -288,7 +378,7 @@ footer{padding:30px 0 46px;color:var(--muted);font-family:var(--font-mono);font-
         </div>
       </article>
 
-      <article class="entry reveal" data-entry>
+      <article class="entry reveal" id="entry-chainguard" data-entry>
         <span class="node"></span>
         <div class="entry-meta">
           <span class="label">2026-08 · live</span>
@@ -315,7 +405,7 @@ footer{padding:30px 0 46px;color:var(--muted);font-family:var(--font-mono);font-
         </div>
       </article>
 
-      <article class="entry reveal" data-entry>
+      <article class="entry reveal" id="entry-payparity" data-entry>
         <span class="node"></span>
         <div class="entry-meta">
           <span class="label">2026 · live on Sepolia</span>
@@ -342,7 +432,7 @@ footer{padding:30px 0 46px;color:var(--muted);font-family:var(--font-mono);font-
         </div>
       </article>
 
-      <article class="entry reveal" data-entry>
+      <article class="entry reveal" id="entry-raksha" data-entry>
         <span class="node"></span>
         <div class="entry-meta">
           <span class="label">2026 · live</span>
@@ -379,15 +469,15 @@ footer{padding:30px 0 46px;color:var(--muted);font-family:var(--font-mono);font-
     <p class="sec-note">Taken from things that actually went wrong, not from a blog post.</p>
     <div class="grid-3">
       <div class="tile reveal">
-        <h4>A system that can move money needs a gate it cannot argue with</h4>
+        <h3>A system that can move money needs a gate it cannot argue with</h3>
         <p>LLMs diagnose. Deterministic rules execute. The moment those two swap places you have an unbounded-spend bug, and no amount of prompt engineering fixes it.</p>
       </div>
       <div class="tile reveal">
-        <h4>If you can't prove it afterwards, it didn't happen</h4>
+        <h3>If you can't prove it afterwards, it didn't happen</h3>
         <p>Append-only logs, hash chains, named liability on every event. Recovery is worthless if nobody can reconstruct who decided what.</p>
       </div>
       <div class="tile reveal">
-        <h4>Report the failures at the same size as the wins</h4>
+        <h3>Report the failures at the same size as the wins</h3>
         <p>I show blocked and escalated counts next to recovered ones. A dashboard that only reports success is a dashboard nobody should trust.</p>
       </div>
     </div>
@@ -402,20 +492,20 @@ footer{padding:30px 0 46px;color:var(--muted);font-family:var(--font-mono);font-
     <div class="grid-2">
       <div class="tile reveal">
         <span class="stat">500+</span>
-        <h4>Deals closed running Crypto Japans</h4>
+        <h3>Deals closed running Crypto Japans</h3>
         <p>Web3 marketing agency I've run since 2021 — KOL campaigns and long-standing work with Binance, BC Game and BetFury. Client-facing, deadline-facing, revenue-facing since school.</p>
       </div>
       <div class="tile reveal">
         <span class="stat">1st / 800+</span>
-        <h4>Zerodha × FIC national startup challenge</h4>
+        <h3>Zerodha × FIC national startup challenge</h3>
         <p>Also 1st at Dehradun Chapters 2026 (E-Cell IIT Bombay / TBI-GEU) with VitaSync AI, and 3rd in AlgoVision at COMET'26, IIT Roorkee.</p>
       </div>
       <div class="tile reveal">
-        <h4>Knowledge &amp; Research Head, Finance &amp; Investment Cell</h4>
+        <h3>Knowledge &amp; Research Head, Finance &amp; Investment Cell</h3>
         <p>GEHU, 2026–27 term. I publish institutional-style research notes — the first covered the NSE F&amp;O market close extension.</p>
       </div>
       <div class="tile reveal">
-        <h4>StayingAhead — writing and video</h4>
+        <h3>StayingAhead — writing and video</h3>
         <p>My own media brand: newsletter, YouTube and X. Technical explainers for a markets and Web3 audience, written and edited by me.</p>
       </div>
     </div>
@@ -529,8 +619,23 @@ footer{padding:30px 0 46px;color:var(--muted);font-family:var(--font-mono);font-
     btn.disabled = false;
   }
 
-  btn.addEventListener('click', verify);
-  buildChain();
+  function syncHeroLog(){
+    document.querySelectorAll('[data-index]').forEach((row, i) => {
+      const el = entries[i];
+      if(!el) return;
+      const prev = row.querySelector('[data-index-prev]');
+      const hash = row.querySelector('[data-index-hash]');
+      if(prev) prev.textContent = el.querySelector('[data-prev]').textContent;
+      if(hash) hash.textContent = el.querySelector('[data-hash]').textContent;
+    });
+    const state = document.getElementById('heroLogState');
+    if(state && chainState){
+      state.textContent = chainState.textContent.replace(/^Chain:\s*/, '');
+    }
+  }
+
+  btn.addEventListener('click', () => { verify().then(syncHeroLog); });
+  buildChain().then(syncHeroLog);
 
   const io = new IntersectionObserver((list) => {
     list.forEach(x => { if(x.isIntersecting){ x.target.classList.add('in'); io.unobserve(x.target); } });
