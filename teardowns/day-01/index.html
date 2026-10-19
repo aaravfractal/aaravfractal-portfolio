@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>DashX calculator: before and after</title>
+<meta name="description" content="Day 1 of 10. A prototype fix for a payments calculator that shows a rate but no fees.">
+<style>
+:root{
+  --ink:#0B0B0C;
+  --ink-2:#141416;
+  --ink-3:#1E1E21;
+  --orange:#FF5B1F;
+  --paper:#F6F2EA;
+  --mute:#8E8A84;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme:light){:root{color-scheme:dark}}
+@media (prefers-color-scheme:dark){:root{color-scheme:dark}}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;background:var(--ink);color:var(--paper);font:17px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+.wrap{max-width:880px;margin:0 auto;padding:24px 16px 48px}
+a{color:var(--paper);text-underline-offset:3px}
+:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+.kicker{color:var(--mute);margin:0 0 8px}
+h1{font-size:clamp(32px,7vw,48px);line-height:1.1;margin:0 0 24px;letter-spacing:-0.01em}
+h2{font-size:22px;line-height:1.3;margin:0 0 12px}
+h3{font-size:19px;line-height:1.3;margin:0}
+p{margin:0 0 12px}
+.mute{color:var(--mute)}
+.small{font-size:15px}
+
+.toggle{display:inline-flex;border:1px solid var(--mute);border-radius:16px;padding:4px;gap:4px;margin:0 0 24px}
+.toggle button{min-height:48px;min-width:112px;padding:0 20px;border:0;border-radius:12px;background:transparent;color:var(--paper);font:inherit;font-weight:600;cursor:pointer}
+.toggle button[aria-pressed="true"]{background:var(--orange);color:var(--ink)}
+.no-js .toggle{display:none}
+
+.views{display:grid}
+.view{grid-area:1/1;min-width:0}
+.js .view.off{visibility:hidden}
+.no-js .views{display:block}
+.no-js .view{margin-bottom:32px}
+.no-js .calc{display:none}
+
+.card{background:var(--ink-2);border:1px solid var(--ink-3);border-radius:16px;padding:20px 16px;margin:0 0 16px}
+@media (min-width:600px){.card{padding:24px}}
+
+/* Before */
+.amount{font-size:40px;font-weight:700;line-height:1.1;margin:4px 0 16px}
+.quote{border-top:1px solid var(--ink-3);padding:12px 0}
+.quote dt{color:var(--mute)}
+.quote dd{margin:0;font-size:22px;font-weight:600}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 0;padding:0;list-style:none}
+.chips li{border:1px solid var(--mute);border-radius:999px;padding:4px 12px;font-size:15px}
+
+/* After */
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field label{font-weight:600}
+input{width:100%;min-height:48px;padding:10px 12px;border:1px solid var(--mute);border-radius:12px;background:var(--ink);color:var(--paper);font:inherit;font-variant-numeric:tabular-nums}
+input::placeholder{color:var(--mute);opacity:1}
+.top-inputs{display:grid;gap:16px;grid-template-columns:1fr}
+@media (min-width:600px){.top-inputs{grid-template-columns:1fr 1fr}}
+
+table.cmp{display:block;width:100%;border-collapse:collapse}
+table.cmp caption{display:block;text-align:left;font-size:22px;font-weight:700;margin:0 0 12px}
+table.cmp thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+table.cmp tbody{display:block}
+table.cmp tr{display:grid;gap:12px;grid-template-columns:1fr;background:var(--ink-2);border:2px solid var(--ink-3);border-radius:16px;padding:16px;margin:0 0 16px}
+table.cmp tr.best{border-color:var(--orange)}
+table.cmp th,table.cmp td{display:block;text-align:left;padding:0;font-weight:inherit;min-width:0}
+@media (min-width:720px){
+  table.cmp tr{grid-template-columns:repeat(3,1fr);padding:20px}
+  table.cmp .prov,table.cmp .res{grid-column:1/-1}
+}
+.prov-head{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
+.tag{background:var(--orange);color:var(--ink);font-weight:700;font-size:15px;border-radius:999px;padding:2px 10px}
+.tag[hidden]{display:none}
+.note{color:var(--mute);font-size:15px;margin:2px 0 0}
+.res{border-top:1px solid var(--ink-3);padding-top:12px !important}
+.bd{display:grid;grid-template-columns:auto 1fr;gap:4px 16px;margin:0}
+.bd dt{color:var(--mute)}
+.bd dd{margin:0;text-align:right;font-variant-numeric:tabular-nums}
+.net{font-size:40px;font-weight:700;line-height:1.15;margin:8px 0 0;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.best .net{color:var(--orange)}
+.status{min-height:1.5em;margin:0 0 16px}
+
+.est-label{display:inline-block;border:1px solid var(--mute);border-radius:999px;padding:2px 10px;font-size:15px;color:var(--mute);margin:0 0 8px}
+.big{font-size:40px;font-weight:700;line-height:1.15;margin:0 0 12px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+
+.timeline{list-style:none;margin:0 0 12px;padding:0;display:grid;gap:8px;grid-template-columns:1fr;counter-reset:s}
+@media (min-width:600px){.timeline{grid-template-columns:repeat(4,1fr)}}
+.timeline li{counter-increment:s;border:1px solid var(--ink-3);border-radius:12px;padding:12px;background:var(--ink)}
+.timeline li::before{content:counter(s);display:block;color:var(--orange);font-weight:700}
+
+.btn{min-height:48px;padding:0 20px;border:1px solid var(--orange);border-radius:12px;background:var(--orange);color:var(--ink);font:inherit;font-weight:700;cursor:pointer}
+.copy-row{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+footer{border-top:1px solid var(--ink-3);margin-top:32px;padding-top:16px}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <p class="kicker">Day 1 of 10 · Web3 product teardown</p>
+  <h1>DashX calculator: before and after</h1>
+
+  <div class="toggle" role="group" aria-label="Choose view">
+    <button type="button" id="btn-before" aria-pressed="false" aria-controls="view-before">Before</button>
+    <button type="button" id="btn-after" aria-pressed="true" aria-controls="view-after">After</button>
+  </div>
+
+  <div class="views">
+    <section class="view off" id="view-before" aria-labelledby="h-before">
+      <h2 id="h-before">Before</h2>
+      <div class="card">
+        <h3>Calculate your savings</h3>
+        <p class="mute small" style="margin:12px 0 0">Amount</p>
+        <p class="amount">100 USD</p>
+        <dl class="quote" style="margin:0">
+          <dt>Provider A rate (live)</dt>
+          <dd>₹98.51</dd>
+          <dt style="margin-top:8px">You receive approx.</dt>
+          <dd>₹9,851.00</dd>
+        </dl>
+        <dl class="quote" style="margin:0">
+          <dt>PayPal</dt>
+          <dd>₹97.72</dd>
+        </dl>
+        <ul class="chips">
+          <li>RBI Approved Framework</li>
+          <li>24-Hours Settlement*</li>
+        </ul>
+        <p class="mute small" style="margin:12px 0 0">All figures in this card are from the product’s page.</p>
+      </div>
+      <p class="mute">Seen on the product’s page. Approximate. No fee breakdown.</p>
+    </section>
+
+    <section class="view" id="view-after" aria-labelledby="h-after">
+      <h2 id="h-after">After</h2>
+      <noscript><p class="card">Turn on JavaScript to use the calculator.</p></noscript>
+      <div class="calc">
+        <div class="card top-inputs">
+          <div class="field">
+            <label for="amount">Invoice amount (USD)</label>
+            <input id="amount" type="number" inputmode="decimal" min="1" step="1" value="100">
+          </div>
+          <div class="field">
+            <label for="count">Invoices per month</label>
+            <input id="count" type="number" inputmode="decimal" min="1" step="1" value="4">
+          </div>
+        </div>
+
+        <table class="cmp" role="table">
+          <caption>Compare what you get in INR</caption>
+          <thead role="rowgroup">
+            <tr role="row"><th role="columnheader" scope="col">Provider</th><th role="columnheader" scope="col">Rate</th><th role="columnheader" scope="col">Fixed fee</th><th role="columnheader" scope="col">Percent fee</th><th role="columnheader" scope="col">Result</th></tr>
+          </thead>
+          <tbody id="rows" role="rowgroup"></tbody>
+        </table>
+        <p class="status" id="status" aria-live="polite"></p>
+
+        <div class="card" id="estimate">
+          <span class="est-label">Estimate</span>
+          <h3>Yearly difference, best vs second best</h3>
+          <p class="big" id="annual">₹0.00</p>
+          <p id="formula" class="mute"></p>
+          <p class="mute small">Assumes every invoice is the same amount, and that rates and fees stay as entered for 12 months. Does not include tax, GST on fees or charges from your own bank. Real rates move every day.</p>
+        </div>
+
+        <div class="card">
+          <h3 style="margin-bottom:12px">Settlement timeline</h3>
+          <ol class="timeline">
+            <li>Client pays</li>
+            <li>Funds convert</li>
+            <li>Funds reach your bank</li>
+            <li>Compliance document issued</li>
+          </ol>
+          <p class="mute small">Timing as stated by the provider: 24 hours* (from the product’s page). Conditions not shown on the page.</p>
+        </div>
+
+        <div class="copy-row">
+          <button type="button" class="btn" id="copy">Copy summary</button>
+          <span id="copy-status" class="mute" aria-live="polite"></span>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <p class="mute small">Prototype. Mock data. Not affiliated with DashX. Competitor figures must be verified at the source.</p>
+    <p class="small"><a href="../">All teardowns</a></p>
+  </footer>
+</main>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  root.classList.remove('no-js');
+  root.classList.add('js');
+
+  var PROVIDERS = [
+    { id: 'dashx', name: 'DashX', rate: '98.51', fixed: '0', pct: '0', note: 'from DashX’s calculator, check fees' },
+    { id: 'paypal', name: 'PayPal', rate: '97.72', fixed: '0', pct: '0', note: 'as shown on DashX’s page, not verified' },
+    { id: 'wise', name: 'Wise', rate: '', fixed: '', pct: '', note: 'verify at their fee page' },
+    { id: 'wire', name: 'Bank wire', rate: '', fixed: '', pct: '', note: 'verify at their fee page' }
+  ];
+  var FIELDS = [
+    { key: 'rate', label: 'Rate (INR per USD)', step: '0.01' },
+    { key: 'fixed', label: 'Fixed fee (USD)', step: '0.01' },
+    { key: 'pct', label: 'Percent fee (%)', step: '0.1' }
+  ];
+
+  var inr = new Intl.NumberFormat('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  var usd = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  function fINR(n) { return (n < 0 ? '−₹' : '₹') + inr.format(Math.abs(n)); }
+  function fUSD(n) { return (n < 0 ? '−$' : '$') + usd.format(Math.abs(n)); }
+  function num(v) {
+    if (v === '' || v == null) return null;
+    var n = parseFloat(v);
+    return isFinite(n) ? n : null;
+  }
+
+  // Pure calculation, kept separate so it can be tested.
+  function calcRow(amount, rate, fixed, pct) {
+    if (rate == null || rate <= 0 || amount == null || amount <= 0) return null;
+    var fee = Math.max(0, fixed || 0) + amount * Math.max(0, pct || 0) / 100;
+    var netUsd = amount - fee;
+    return { fee: fee, netUsd: netUsd, netInr: netUsd * rate };
+  }
+  window.calcRow = calcRow;
+
+  var tbody = document.getElementById('rows');
+  PROVIDERS.forEach(function (p) {
+    var tr = document.createElement('tr');
+    tr.setAttribute('role', 'row');
+    tr.id = 'row-' + p.id;
+    var html = '<th role="rowheader" scope="row" class="prov"><div class="prov-head"><h3>' + p.name +
+      '</h3><span class="tag" hidden>Highest net INR</span></div><p class="note">' + p.note + '</p></th>';
+    FIELDS.forEach(function (f) {
+      var id = p.id + '-' + f.key;
+      html += '<td role="cell"><div class="field"><label for="' + id + '">' + f.label + '</label>' +
+        '<input id="' + id + '" type="number" inputmode="decimal" min="0" step="' + f.step + '" value="' + p[f.key] + '"' +
+        (p[f.key] === '' ? ' placeholder="enter current figure"' : '') + '></div></td>';
+    });
+    html += '<td role="cell" class="res"><dl class="bd">' +
+      '<dt>Invoice amount</dt><dd data-o="amt"></dd>' +
+      '<dt>Fee</dt><dd data-o="fee"></dd>' +
+      '<dt>Rate</dt><dd data-o="rate"></dd>' +
+      '<dt>Net INR in hand</dt><dd data-o="netl"></dd></dl>' +
+      '<p class="net" data-o="net"></p></td>';
+    tr.innerHTML = html;
+    tbody.appendChild(tr);
+  });
+
+  var last = [];
+  function update() {
+    var amount = num(document.getElementById('amount').value);
+    var count = num(document.getElementById('count').value);
+    var results = [];
+    PROVIDERS.forEach(function (p) {
+      var tr = document.getElementById('row-' + p.id);
+      var rate = num(document.getElementById(p.id + '-rate').value);
+      var fixed = num(document.getElementById(p.id + '-fixed').value);
+      var pct = num(document.getElementById(p.id + '-pct').value);
+      var r = calcRow(amount, rate, fixed, pct);
+      var o = function (k) { return tr.querySelector('[data-o="' + k + '"]'); };
+      o('amt').textContent = amount != null && amount > 0 ? fUSD(amount) : 'Not entered';
+      if (r) {
+        o('fee').textContent = fUSD(r.fee) + ' (' + fUSD(Math.max(0, fixed || 0)) + ' + ' + Math.max(0, pct || 0) + '%)';
+        o('rate').textContent = '₹' + rate + ' per USD';
+        o('netl').textContent = fINR(r.netInr);
+        o('net').textContent = fINR(r.netInr);
+        results.push({ p: p, r: r, rate: rate, fixed: Math.max(0, fixed || 0), pct: Math.max(0, pct || 0), tr: tr });
+      } else {
+        o('fee').textContent = 'Not entered';
+        o('rate').textContent = rate != null && rate > 0 ? '₹' + rate + ' per USD' : 'Not entered';
+        o('netl').textContent = 'Not entered';
+        o('net').textContent = '₹ not calculated';
+      }
+      tr.classList.remove('best');
+      tr.querySelector('.tag').hidden = true;
+    });
+
+    var status = document.getElementById('status');
+    var annual = document.getElementById('annual');
+    var formula = document.getElementById('formula');
+    var sorted = results.slice().sort(function (a, b) { return b.r.netInr - a.r.netInr; });
+    last = sorted;
+    if (amount == null || amount <= 0) {
+      status.textContent = 'Enter an invoice amount to compare.';
+      annual.textContent = '₹0.00';
+      formula.textContent = 'Needs an invoice amount and at least two providers.';
+      return;
+    }
+    if (sorted.length < 2) {
+      status.textContent = 'Fill in at least two providers to compare.';
+      annual.textContent = '₹0.00';
+      formula.textContent = 'Needs at least two providers.';
+      return;
+    }
+    status.textContent = '';
+    sorted[0].tr.classList.add('best');
+    sorted[0].tr.querySelector('.tag').hidden = false;
+    var months = 12;
+    var n = count != null && count > 0 ? count : 0;
+    var diff = sorted[0].r.netInr - sorted[1].r.netInr;
+    annual.textContent = fINR(diff * n * months);
+    formula.textContent = 'Formula: (' + sorted[0].p.name + ' ' + fINR(sorted[0].r.netInr) + ' − ' +
+      sorted[1].p.name + ' ' + fINR(sorted[1].r.netInr) + ') × ' + n + ' invoices per month × 12 months.';
+  }
+
+  function summary() {
+    var amount = num(document.getElementById('amount').value);
+    var lines = ['DashX calculator: comparison summary (prototype, mock data)', 'Invoice amount: ' + (amount ? fUSD(amount) : 'not entered'), ''];
+    if (!last.length) lines.push('No providers filled in.');
+    last.forEach(function (x, i) {
+      lines.push((i === 0 && last.length > 1 ? '[Highest] ' : '') + x.p.name + ': rate ₹' + x.rate + ' per USD, fee ' + fUSD(x.r.fee) +
+        ' (' + fUSD(x.fixed) + ' + ' + x.pct + '%), net ' + fINR(x.r.netInr));
+    });
+    PROVIDERS.forEach(function (p) {
+      if (!last.some(function (x) { return x.p === p; })) lines.push(p.name + ': not entered');
+    });
+    lines.push('', 'Estimate per year: ' + document.getElementById('annual').textContent);
+    lines.push(document.getElementById('formula').textContent);
+    lines.push('Competitor figures must be verified at the source. Not affiliated with DashX.');
+    return lines.join('\n');
+  }
+
+  document.getElementById('copy').addEventListener('click', function () {
+    var text = summary();
+    var msg = document.getElementById('copy-status');
+    function fallback() {
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      var ok = false; try { ok = document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(ta);
+      msg.textContent = ok ? 'Copied.' : 'Copy failed. Select and copy by hand.';
+    }
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(function () { msg.textContent = 'Copied.'; }, fallback);
+    } else { fallback(); }
+  });
+  window.getSummary = summary;
+
+  document.querySelector('.calc').addEventListener('input', update);
+  update();
+
+  var bB = document.getElementById('btn-before'), bA = document.getElementById('btn-after');
+  var vB = document.getElementById('view-before'), vA = document.getElementById('view-after');
+  function show(before) {
+    bB.setAttribute('aria-pressed', String(before));
+    bA.setAttribute('aria-pressed', String(!before));
+    vB.classList.toggle('off', !before);
+    vA.classList.toggle('off', before);
+  }
+  bB.addEventListener('click', function () { show(true); });
+  bA.addEventListener('click', function () { show(false); });
+  show(false);
+})();
+</script>
+</body>
+</html>
