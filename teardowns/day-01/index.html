@@ -6,137 +6,183 @@
 <meta name="color-scheme" content="dark">
 <title>DashX calculator: before and after</title>
 <meta name="description" content="Day 1 of 10. A prototype fix for a payments calculator that shows a rate but no fees.">
+<link rel="icon" href="data:,">
+<script>document.documentElement.className='js'</script>
 <style>
 :root{
-  --ink:#0B0B0C;
-  --ink-2:#141416;
-  --ink-3:#1E1E21;
-  --orange:#FF5B1F;
-  --paper:#F6F2EA;
-  --mute:#8E8A84;
   color-scheme:dark;
+  --ink:#0B0B0C;--ink-2:#141416;--ink-3:#1E1E21;--orange:#FF5B1F;--paper:#F6F2EA;--mute:#8E8A84;
+  --s1:4px;--s2:8px;--s3:12px;--s4:16px;--s5:24px;--s6:32px;--s7:48px;
+  --r-card:16px;--r-input:12px;--r-pill:999px;
+  --font:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --fs-min:16px;--fs-body:17px;--fs-h3:20px;--fs-h2:24px;--fs-result:40px;--fs-h1:clamp(32px,7vw,44px);
+  --lh-body:1.5;--lh-head:1.3;--lh-tight:1.15;
+  --tap:48px;--measure:720px;--gutter:16px;
+  --focus:2px solid var(--orange);
+  --t-fast:150ms;--t-base:200ms;
 }
 @media (prefers-color-scheme:light){:root{color-scheme:dark}}
 @media (prefers-color-scheme:dark){:root{color-scheme:dark}}
+@media (min-width:640px){:root{--gutter:24px}}
 *,*::before,*::after{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
-body{margin:0;background:var(--ink);color:var(--paper);font:17px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
-.wrap{max-width:880px;margin:0 auto;padding:24px 16px 48px}
-a{color:var(--paper);text-underline-offset:3px}
-:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
-.kicker{color:var(--mute);margin:0 0 8px}
-h1{font-size:clamp(32px,7vw,48px);line-height:1.1;margin:0 0 24px;letter-spacing:-0.01em}
-h2{font-size:22px;line-height:1.3;margin:0 0 12px}
-h3{font-size:19px;line-height:1.3;margin:0}
-p{margin:0 0 12px}
-.mute{color:var(--mute)}
-.small{font-size:15px}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;background:var(--ink)}
+body{margin:0;background:var(--ink);color:var(--paper);font:400 var(--fs-body)/var(--lh-body) var(--font)}
+h1,h2,h3,p,dl,dd,ol,ul{margin:0}
+h1{font-size:var(--fs-h1);line-height:var(--lh-tight);font-weight:700;letter-spacing:-0.01em;margin:var(--s4) 0 var(--s5)}
+h2{font-size:var(--fs-h2);line-height:var(--lh-head);font-weight:700;margin-bottom:var(--s3)}
+h3,.pname{font-size:var(--fs-h3);line-height:var(--lh-head);font-weight:700}
+p+p{margin-top:var(--s3)}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:var(--focus);outline-offset:2px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.wrap{max-width:calc(var(--measure) + 2 * var(--gutter));margin:0 auto;padding:var(--s5) var(--gutter) var(--s7)}
+.wrap>*{min-width:0}
+.section{margin-top:var(--s6)}
+.note{color:var(--mute);font-size:var(--fs-min)}
+.num{font-variant-numeric:tabular-nums}
 
-.toggle{display:inline-flex;border:1px solid var(--mute);border-radius:16px;padding:4px;gap:4px;margin:0 0 24px}
-.toggle button{min-height:48px;min-width:112px;padding:0 20px;border:0;border-radius:12px;background:transparent;color:var(--paper);font:inherit;font-weight:600;cursor:pointer}
+.topbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:0 var(--s4)}
+.kicker{color:var(--mute);font-size:var(--fs-min)}
+a{color:var(--paper);text-decoration-thickness:1px;text-underline-offset:3px}
+a:hover{text-decoration-thickness:2px}
+.link-tap{display:inline-flex;align-items:center;min-height:var(--tap);padding:0 var(--s3);margin-right:calc(-1 * var(--s3))}
+
+.toggle{display:inline-flex;gap:var(--s1);padding:var(--s1);border:1px solid var(--mute);border-radius:var(--r-card);margin-bottom:var(--s5)}
+.toggle button{min-height:var(--tap);min-width:112px;padding:0 var(--s5);border:0;border-radius:var(--r-input);background:transparent;color:var(--paper);font-weight:600;cursor:pointer;transition:background-color var(--t-fast) ease-out}
+.toggle button:hover{outline:1px solid var(--paper);outline-offset:-1px}
 .toggle button[aria-pressed="true"]{background:var(--orange);color:var(--ink)}
+.toggle button:focus-visible{outline:var(--focus);outline-offset:2px}
 .no-js .toggle{display:none}
 
 .views{display:grid}
 .view{grid-area:1/1;min-width:0}
-.js .view.off{visibility:hidden}
+.js .view[data-off]{visibility:hidden}
 .no-js .views{display:block}
-.no-js .view{margin-bottom:32px}
+.no-js .view+.view{margin-top:var(--s6)}
 .no-js .calc{display:none}
 
-.card{background:var(--ink-2);border:1px solid var(--ink-3);border-radius:16px;padding:20px 16px;margin:0 0 16px}
-@media (min-width:600px){.card{padding:24px}}
+.card{background:var(--ink-2);border:2px solid var(--ink-3);border-radius:var(--r-card);padding:var(--s4);margin-bottom:var(--s4);transition:border-color var(--t-base) ease-out}
+.card.best{border-color:var(--orange)}
 
 /* Before */
-.amount{font-size:40px;font-weight:700;line-height:1.1;margin:4px 0 16px}
-.quote{border-top:1px solid var(--ink-3);padding:12px 0}
-.quote dt{color:var(--mute)}
-.quote dd{margin:0;font-size:22px;font-weight:600}
-.chips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 0;padding:0;list-style:none}
-.chips li{border:1px solid var(--mute);border-radius:999px;padding:4px 12px;font-size:15px}
+.quote{display:grid;gap:var(--s1)}
+.quote dt{color:var(--mute);font-size:var(--fs-min);margin-top:var(--s3)}
+.quote dt:first-child{margin-top:var(--s3)}
+.rate{font-size:var(--fs-h2);font-weight:600;font-variant-numeric:tabular-nums}
+.result{font-size:var(--fs-result);font-weight:700;line-height:var(--lh-tight);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.chips{display:flex;flex-wrap:wrap;gap:var(--s2);margin-top:var(--s4);padding:0;list-style:none}
+.chips li,.tag,.badge{display:inline-block;border-radius:var(--r-pill);font-size:var(--fs-min);line-height:var(--lh-body)}
+.chips li{border:1px solid var(--mute);padding:var(--s2) var(--s3)}
+.card .src{margin-top:var(--s4)}
 
-/* After */
-.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+/* After: inputs */
+.field{display:flex;flex-direction:column;gap:var(--s2);min-width:0}
 .field label{font-weight:600}
-input{width:100%;min-height:48px;padding:10px 12px;border:1px solid var(--mute);border-radius:12px;background:var(--ink);color:var(--paper);font:inherit;font-variant-numeric:tabular-nums}
+input{width:100%;min-width:0;min-height:var(--tap);padding:var(--s3);background:var(--ink-3);border:1px solid var(--mute);border-radius:var(--r-input);color:var(--paper);font-variant-numeric:tabular-nums}
 input::placeholder{color:var(--mute);opacity:1}
-.top-inputs{display:grid;gap:16px;grid-template-columns:1fr}
-@media (min-width:600px){.top-inputs{grid-template-columns:1fr 1fr}}
+input:hover{border-color:var(--paper)}
+input[aria-invalid="true"]{border:2px solid var(--paper);padding:11px}
+.top-inputs{display:grid;gap:var(--s4)}
+.status{margin-top:var(--s4)}
+.status:empty{margin:0}
 
-table.cmp{display:block;width:100%;border-collapse:collapse}
-table.cmp caption{display:block;text-align:left;font-size:22px;font-weight:700;margin:0 0 12px}
+/* After: comparison table as cards */
+table.cmp{display:block;width:100%;border-collapse:collapse;margin-top:var(--s6)}
+table.cmp caption{display:block;text-align:left;font-size:var(--fs-h2);line-height:var(--lh-head);font-weight:700;margin-bottom:var(--s4)}
+.cap-help{display:block;margin-top:var(--s1);font-weight:400;line-height:var(--lh-body)}
 table.cmp thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 table.cmp tbody{display:block}
-table.cmp tr{display:grid;gap:12px;grid-template-columns:1fr;background:var(--ink-2);border:2px solid var(--ink-3);border-radius:16px;padding:16px;margin:0 0 16px}
-table.cmp tr.best{border-color:var(--orange)}
-table.cmp th,table.cmp td{display:block;text-align:left;padding:0;font-weight:inherit;min-width:0}
-@media (min-width:720px){
-  table.cmp tr{grid-template-columns:repeat(3,1fr);padding:20px}
-  table.cmp .prov,table.cmp .res{grid-column:1/-1}
-}
-.prov-head{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
-.tag{background:var(--orange);color:var(--ink);font-weight:700;font-size:15px;border-radius:999px;padding:2px 10px}
+table.cmp tr.card{display:grid;gap:var(--s3);grid-template-columns:1fr 1fr}
+table.cmp th,table.cmp td{display:block;text-align:left;padding:0;font-weight:400;min-width:0}
+table.cmp td.field{display:flex}
+.c-prov,.c-rate,.c-res{grid-column:1/-1}
+.row-head{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s2) var(--s3);min-height:32px}
+.tag{background:var(--orange);color:var(--ink);font-weight:700;padding:0 var(--s3)}
 .tag[hidden]{display:none}
-.note{color:var(--mute);font-size:15px;margin:2px 0 0}
-.res{border-top:1px solid var(--ink-3);padding-top:12px !important}
-.bd{display:grid;grid-template-columns:auto 1fr;gap:4px 16px;margin:0}
-.bd dt{color:var(--mute)}
-.bd dd{margin:0;text-align:right;font-variant-numeric:tabular-nums}
-.net{font-size:40px;font-weight:700;line-height:1.15;margin:8px 0 0;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.c-prov .note{margin-top:var(--s1)}
+.bd{display:grid;grid-template-columns:auto 1fr;gap:var(--s1) var(--s4);padding-top:var(--s3);border-top:1px solid var(--ink-3)}
+.bd dt{color:var(--mute);font-size:var(--fs-min)}
+.bd dd{text-align:right;font-variant-numeric:tabular-nums;overflow-wrap:anywhere;min-width:0}
+.bd .dt-net{grid-column:1/-1;margin-top:var(--s2)}
+.bd dd.net{grid-column:1/-1;text-align:left}
+.net{font-size:var(--fs-result);font-weight:700;line-height:var(--lh-tight);min-height:46px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
 .best .net{color:var(--orange)}
-.status{min-height:1.5em;margin:0 0 16px}
+.net.empty,.result.empty{font-size:var(--fs-body);font-weight:400;color:var(--mute);line-height:46px}
 
-.est-label{display:inline-block;border:1px solid var(--mute);border-radius:999px;padding:2px 10px;font-size:15px;color:var(--mute);margin:0 0 8px}
-.big{font-size:40px;font-weight:700;line-height:1.15;margin:0 0 12px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+/* Estimate */
+.badge{border:1px solid var(--mute);color:var(--mute);padding:0 var(--s3);margin-bottom:var(--s2)}
+#annual{margin:var(--s3) 0}
 
-.timeline{list-style:none;margin:0 0 12px;padding:0;display:grid;gap:8px;grid-template-columns:1fr;counter-reset:s}
-@media (min-width:600px){.timeline{grid-template-columns:repeat(4,1fr)}}
-.timeline li{counter-increment:s;border:1px solid var(--ink-3);border-radius:12px;padding:12px;background:var(--ink)}
-.timeline li::before{content:counter(s);display:block;color:var(--orange);font-weight:700}
+/* Timeline */
+.timeline{list-style:none;padding:0;margin:var(--s3) 0;display:grid;gap:var(--s2);grid-template-columns:1fr;counter-reset:s}
+.timeline li{counter-increment:s;min-width:0;background:var(--ink-2);border:1px solid var(--ink-3);border-radius:var(--r-input);padding:var(--s3)}
+.timeline li::before{content:counter(s);display:block;font-size:var(--fs-min);font-weight:700;color:var(--mute)}
 
-.btn{min-height:48px;padding:0 20px;border:1px solid var(--orange);border-radius:12px;background:var(--orange);color:var(--ink);font:inherit;font-weight:700;cursor:pointer}
-.copy-row{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
-footer{border-top:1px solid var(--ink-3);margin-top:32px;padding-top:16px}
+/* Copy */
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:var(--tap);padding:0 var(--s5);background:transparent;border:1px solid var(--paper);border-radius:var(--r-input);color:var(--paper);font-weight:600;cursor:pointer}
+.btn:hover,.btn:active{background:var(--ink-3)}
+.copy-row{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s3)}
+
+footer{margin-top:var(--s6);padding-top:var(--s4);border-top:1px solid var(--ink-3);color:var(--mute);font-size:var(--fs-min)}
+
+@media (min-width:640px){
+  .section,table.cmp{margin-top:var(--s7)}
+  .card{padding:var(--s5)}
+  .top-inputs{grid-template-columns:1fr 1fr}
+  table.cmp tr.card{grid-template-columns:repeat(3,1fr)}
+  .c-rate{grid-column:auto}
+  .timeline{grid-template-columns:1fr 1fr}
+}
+@media (min-width:1024px){.timeline{grid-template-columns:repeat(4,1fr)}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important}}
+@media (forced-colors:active){
+  .card,.timeline li,.chips li,.badge,input,.btn,.toggle{border-color:CanvasText}
+  .card.best{border-style:double;border-width:4px}
+  .toggle button[aria-pressed="true"]{background:Highlight;color:HighlightText;forced-color-adjust:none}
+  .tag{forced-color-adjust:none;background:Highlight;color:HighlightText}
+  :focus-visible{outline-color:Highlight}
+}
 </style>
 </head>
 <body>
 <main class="wrap">
-  <p class="kicker">Day 1 of 10 · Web3 product teardown</p>
+  <div class="topbar">
+    <p class="kicker">Day 1 of 10 · Web3 product teardown</p>
+    <a class="link-tap" href="../">All teardowns</a>
+  </div>
   <h1>DashX calculator: before and after</h1>
 
-  <div class="toggle" role="group" aria-label="Choose view">
-    <button type="button" id="btn-before" aria-pressed="false" aria-controls="view-before">Before</button>
-    <button type="button" id="btn-after" aria-pressed="true" aria-controls="view-after">After</button>
+  <div class="toggle" role="group" aria-label="Choose a view">
+    <button type="button" id="tab-before" aria-pressed="false" aria-controls="view-before">Before</button>
+    <button type="button" id="tab-after" aria-pressed="true" aria-controls="view-after">After</button>
   </div>
 
   <div class="views">
-    <section class="view off" id="view-before" aria-labelledby="h-before">
-      <h2 id="h-before">Before</h2>
+    <section class="view" id="view-before" data-off aria-labelledby="h-before">
+      <h2 id="h-before">Before: the calculator as seen on the product’s page</h2>
       <div class="card">
         <h3>Calculate your savings</h3>
-        <p class="mute small" style="margin:12px 0 0">Amount</p>
-        <p class="amount">100 USD</p>
-        <dl class="quote" style="margin:0">
+        <dl class="quote">
+          <dt>Amount</dt>
+          <dd class="rate">100 USD</dd>
           <dt>Provider A rate (live)</dt>
-          <dd>₹98.51</dd>
-          <dt style="margin-top:8px">You receive approx.</dt>
-          <dd>₹9,851.00</dd>
-        </dl>
-        <dl class="quote" style="margin:0">
+          <dd class="rate">₹98.51</dd>
+          <dt>You receive approx.</dt>
+          <dd class="result">₹9,851.00</dd>
           <dt>PayPal</dt>
-          <dd>₹97.72</dd>
+          <dd class="rate">₹97.72</dd>
         </dl>
         <ul class="chips">
           <li>RBI Approved Framework</li>
           <li>24-Hours Settlement*</li>
         </ul>
-        <p class="mute small" style="margin:12px 0 0">All figures in this card are from the product’s page.</p>
+        <p class="note src">All figures in this card are from the product’s page.</p>
       </div>
-      <p class="mute">Seen on the product’s page. Approximate. No fee breakdown.</p>
+      <p class="note">Seen on the product’s page. Approximate. No fee breakdown.</p>
     </section>
 
     <section class="view" id="view-after" aria-labelledby="h-after">
-      <h2 id="h-after">After</h2>
+      <h2 id="h-after">After: the fix</h2>
       <noscript><p class="card">Turn on JavaScript to use the calculator.</p></noscript>
       <div class="calc">
         <div class="card top-inputs">
@@ -145,214 +191,220 @@ footer{border-top:1px solid var(--ink-3);margin-top:32px;padding-top:16px}
             <input id="amount" type="number" inputmode="decimal" min="1" step="1" value="100">
           </div>
           <div class="field">
-            <label for="count">Invoices per month</label>
-            <input id="count" type="number" inputmode="decimal" min="1" step="1" value="4">
+            <label for="invoices">Invoices per month</label>
+            <input id="invoices" type="number" inputmode="decimal" min="1" step="1" value="4">
           </div>
         </div>
+        <p class="status" id="status" aria-live="polite"></p>
 
         <table class="cmp" role="table">
-          <caption>Compare what you get in INR</caption>
+          <caption>Compare what lands in INR<span class="cap-help note">Results use the figures in each row. Change any figure to update them.</span></caption>
           <thead role="rowgroup">
             <tr role="row"><th role="columnheader" scope="col">Provider</th><th role="columnheader" scope="col">Rate</th><th role="columnheader" scope="col">Fixed fee</th><th role="columnheader" scope="col">Percent fee</th><th role="columnheader" scope="col">Result</th></tr>
           </thead>
           <tbody id="rows" role="rowgroup"></tbody>
         </table>
-        <p class="status" id="status" aria-live="polite"></p>
 
-        <div class="card" id="estimate">
-          <span class="est-label">Estimate</span>
-          <h3>Yearly difference, best vs second best</h3>
-          <p class="big" id="annual">₹0.00</p>
-          <p id="formula" class="mute"></p>
-          <p class="mute small">Assumes every invoice is the same amount, and that rates and fees stay as entered for 12 months. Does not include tax, GST on fees or charges from your own bank. Real rates move every day.</p>
+        <div class="card section" id="estimate">
+          <span class="badge">Estimate</span>
+          <h3>Yearly gap between the top two providers</h3>
+          <p class="result num" id="annual"></p>
+          <p class="note" id="formula"></p>
+          <p class="note">The highest net INR minus the second highest, for one invoice. Then times your invoices per month, times 12.</p>
+          <p class="note">Assumes every invoice is the same amount. Assumes rates and fees stay as entered for 12 months. Leaves out tax, GST on fees and charges from your own bank. Real rates change every day.</p>
         </div>
 
-        <div class="card">
-          <h3 style="margin-bottom:12px">Settlement timeline</h3>
+        <div class="section">
+          <h3>Settlement timeline</h3>
           <ol class="timeline">
             <li>Client pays</li>
             <li>Funds convert</li>
             <li>Funds reach your bank</li>
             <li>Compliance document issued</li>
           </ol>
-          <p class="mute small">Timing as stated by the provider: 24 hours* (from the product’s page). Conditions not shown on the page.</p>
+          <p class="note">Timing as stated by the provider: 24 hours*. Conditions not shown on the page. <span>From the product’s page.</span></p>
         </div>
 
-        <div class="copy-row">
-          <button type="button" class="btn" id="copy">Copy summary</button>
-          <span id="copy-status" class="mute" aria-live="polite"></span>
+        <div class="copy-row section">
+          <button type="button" class="btn" id="copy-summary">Copy summary</button>
+          <span id="copy-status" class="note" aria-live="polite"></span>
         </div>
       </div>
     </section>
   </div>
 
   <footer>
-    <p class="mute small">Prototype. Mock data. Not affiliated with DashX. Competitor figures must be verified at the source.</p>
-    <p class="small"><a href="../">All teardowns</a></p>
+    <p>Prototype. Mock data. Not affiliated with DashX. Competitor figures must be verified at the source.</p>
   </footer>
 </main>
 
 <script>
 (function () {
-  var root = document.documentElement;
-  root.classList.remove('no-js');
-  root.classList.add('js');
-
-  var PROVIDERS = [
-    { id: 'dashx', name: 'DashX', rate: '98.51', fixed: '0', pct: '0', note: 'from DashX’s calculator, check fees' },
-    { id: 'paypal', name: 'PayPal', rate: '97.72', fixed: '0', pct: '0', note: 'as shown on DashX’s page, not verified' },
+  var P = [
+    { id: 'dashx', name: 'DashX', rate: '98.51', fixed: '0', pct: '0', note: 'from DashX’s calculator, check fees', src: 1 },
+    { id: 'paypal', name: 'PayPal', rate: '97.72', fixed: '0', pct: '0', note: 'as shown on DashX’s page, not verified', src: 1 },
     { id: 'wise', name: 'Wise', rate: '', fixed: '', pct: '', note: 'verify at their fee page' },
-    { id: 'wire', name: 'Bank wire', rate: '', fixed: '', pct: '', note: 'verify at their fee page' }
+    { id: 'bank', name: 'Bank wire', rate: '', fixed: '', pct: '', note: 'verify at their fee page' }
   ];
-  var FIELDS = [
-    { key: 'rate', label: 'Rate (INR per USD)', step: '0.01' },
-    { key: 'fixed', label: 'Fixed fee (USD)', step: '0.01' },
-    { key: 'pct', label: 'Percent fee (%)', step: '0.1' }
-  ];
-
+  var F = [['rate', 'Rate (INR per USD)', 'c-rate'], ['fixed', 'Fixed fee (USD)', 'c-fixed'], ['pct', 'Percent fee (%)', 'c-pct']];
+  var SRC = 'Prefilled rate from the product’s page. Prefilled fees of 0 are mock.';
+  var NE = 'Not entered';
   var inr = new Intl.NumberFormat('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   var usd = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  function fINR(n) { return (n < 0 ? '−₹' : '₹') + inr.format(Math.abs(n)); }
-  function fUSD(n) { return (n < 0 ? '−$' : '$') + usd.format(Math.abs(n)); }
-  function num(v) {
+  var rf = new Intl.NumberFormat('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 4 });
+  function $(id) { return document.getElementById(id); }
+  // Round half up to paise, robust to float error (24381.225000000002 -> 24381.23).
+  function r2(x) { var y = Math.round(Number(x + 'e2')); return (isFinite(y) ? y : Math.round(x * 100)) / 100; }
+  function fINR(x) { return '₹' + inr.format(r2(x)); }
+  function fUSD(x) { return '$' + usd.format(r2(x)); }
+  function fRate(x) { return '₹' + rf.format(x) + ' per USD'; }
+  function val(id) {
+    var v = $(id).value;
     if (v === '' || v == null) return null;
-    var n = parseFloat(v);
-    return isFinite(n) ? n : null;
+    var n = Number(v);
+    return isFinite(n) && Math.abs(n) < 1e12 ? n : null;
   }
 
-  // Pure calculation, kept separate so it can be tested.
-  function calcRow(amount, rate, fixed, pct) {
-    if (rate == null || rate <= 0 || amount == null || amount <= 0) return null;
-    var fee = Math.max(0, fixed || 0) + amount * Math.max(0, pct || 0) / 100;
-    var netUsd = amount - fee;
-    return { fee: fee, netUsd: netUsd, netInr: netUsd * rate };
-  }
-  window.calcRow = calcRow;
-
-  var tbody = document.getElementById('rows');
-  PROVIDERS.forEach(function (p) {
-    var tr = document.createElement('tr');
-    tr.setAttribute('role', 'row');
-    tr.id = 'row-' + p.id;
-    var html = '<th role="rowheader" scope="row" class="prov"><div class="prov-head"><h3>' + p.name +
-      '</h3><span class="tag" hidden>Highest net INR</span></div><p class="note">' + p.note + '</p></th>';
-    FIELDS.forEach(function (f) {
-      var id = p.id + '-' + f.key;
-      html += '<td role="cell"><div class="field"><label for="' + id + '">' + f.label + '</label>' +
-        '<input id="' + id + '" type="number" inputmode="decimal" min="0" step="' + f.step + '" value="' + p[f.key] + '"' +
-        (p[f.key] === '' ? ' placeholder="enter current figure"' : '') + '></div></td>';
+  var html = '';
+  P.forEach(function (p) {
+    html += '<tr role="row" class="card" id="row-' + p.id + '"><th role="rowheader" scope="row" class="c-prov">' +
+      '<div class="row-head"><span class="pname">' + p.name + '</span><span class="tag" hidden>Highest net INR</span></div>' +
+      '<p class="note">' + p.note + '</p>' + (p.src ? '<p class="note">' + SRC + '</p>' : '') + '</th>';
+    F.forEach(function (f) {
+      html += '<td role="cell" class="field ' + f[2] + '"><label for="' + f[0] + '-' + p.id + '">' + f[1] +
+        '<span class="sr-only">, ' + p.name + '</span></label><input id="' + f[0] + '-' + p.id +
+        '" type="number" inputmode="decimal" min="0" step="any" value="' + p[f[0]] + '"' +
+        (p.src ? '' : ' placeholder="enter current figure"') + '></td>';
     });
-    html += '<td role="cell" class="res"><dl class="bd">' +
-      '<dt>Invoice amount</dt><dd data-o="amt"></dd>' +
-      '<dt>Fee</dt><dd data-o="fee"></dd>' +
-      '<dt>Rate</dt><dd data-o="rate"></dd>' +
-      '<dt>Net INR in hand</dt><dd data-o="netl"></dd></dl>' +
-      '<p class="net" data-o="net"></p></td>';
-    tr.innerHTML = html;
-    tbody.appendChild(tr);
+    html += '<td role="cell" class="c-res"><dl class="bd">' +
+      '<dt>Invoice amount</dt><dd data-o="amt"></dd><dt>Fee</dt><dd data-o="fee"></dd>' +
+      '<dt>Rate</dt><dd data-o="rate"></dd><dt class="dt-net">Net INR in hand</dt>' +
+      '<dd class="net" id="net-' + p.id + '"></dd></dl></td></tr>';
   });
+  $('rows').innerHTML = html;
 
-  var last = [];
-  function update() {
-    var amount = num(document.getElementById('amount').value);
-    var count = num(document.getElementById('count').value);
-    var results = [];
-    PROVIDERS.forEach(function (p) {
-      var tr = document.getElementById('row-' + p.id);
-      var rate = num(document.getElementById(p.id + '-rate').value);
-      var fixed = num(document.getElementById(p.id + '-fixed').value);
-      var pct = num(document.getElementById(p.id + '-pct').value);
-      var r = calcRow(amount, rate, fixed, pct);
-      var o = function (k) { return tr.querySelector('[data-o="' + k + '"]'); };
-      o('amt').textContent = amount != null && amount > 0 ? fUSD(amount) : 'Not entered';
-      if (r) {
-        o('fee').textContent = fUSD(r.fee) + ' (' + fUSD(Math.max(0, fixed || 0)) + ' + ' + Math.max(0, pct || 0) + '%)';
-        o('rate').textContent = '₹' + rate + ' per USD';
-        o('netl').textContent = fINR(r.netInr);
-        o('net').textContent = fINR(r.netInr);
-        results.push({ p: p, r: r, rate: rate, fixed: Math.max(0, fixed || 0), pct: Math.max(0, pct || 0), tr: tr });
-      } else {
-        o('fee').textContent = 'Not entered';
-        o('rate').textContent = rate != null && rate > 0 ? '₹' + rate + ' per USD' : 'Not entered';
-        o('netl').textContent = 'Not entered';
-        o('net').textContent = '₹ not calculated';
+  var state = null;
+
+  function compute() {
+    var amt = val('amount'); if (amt != null && amt <= 0) amt = null;
+    var inv = val('invoices'); if (inv != null && inv <= 0) inv = null;
+    var rows = P.map(function (p) {
+      var rate = val('rate-' + p.id), fx = val('fixed-' + p.id), pc = val('pct-' + p.id);
+      var o = { p: p, rate: rate != null && rate > 0 ? rate : null, fx: fx == null ? 0 : fx, pc: pc == null ? 0 : pc, negFx: fx != null && fx < 0, negPc: pc != null && pc < 0 };
+      if (amt == null) o.msg = 'Enter an invoice amount';
+      else if (o.rate == null) o.msg = 'Enter a rate';
+      else if (o.negFx || o.negPc) o.msg = 'Fees can’t be below 0.';
+      else {
+        o.fee = o.fx + amt * o.pc / 100;
+        var nu = amt - o.fee;
+        if (nu < 0) o.msg = 'Fees are more than the invoice.';
+        else { o.net = r2(nu * o.rate); o.paise = Math.round(o.net * 100); }
       }
-      tr.classList.remove('best');
-      tr.querySelector('.tag').hidden = true;
+      return o;
     });
+    var ok = rows.filter(function (o) { return o.net != null; })
+      .sort(function (a, b) { return b.paise - a.paise; });
+    var s = { amt: amt, inv: inv, rows: rows, ok: ok, win: null };
+    if (amt == null) {
+      s.status = 'Enter an invoice amount to compare.';
+      s.annual = null; s.formula = 'Needs an invoice amount and at least two providers.';
+    } else if (ok.length < 2) {
+      s.status = 'Fill in at least two providers to compare.';
+      s.annual = null; s.formula = 'Needs at least two providers with a rate.';
+    } else if (ok[0].paise === ok[1].paise) {
+      var tied = ok.filter(function (o) { return o.paise === ok[0].paise; });
+      s.status = tied.length > 2 ? tied[0].p.name + ', ' + tied[1].p.name + ' and others leave the same amount.' :
+        tied[0].p.name + ' and ' + tied[1].p.name + ' leave the same amount.';
+      s.annual = '₹0.00'; s.formula = 'No yearly difference. The top two leave the same amount.';
+    } else {
+      s.status = ''; s.win = ok[0];
+      if (inv == null) { s.annual = null; s.formula = 'Enter invoices per month to see the yearly gap.'; }
+      else {
+        s.annual = fINR((ok[0].paise - ok[1].paise) * inv * 12 / 100);
+        s.formula = '(' + ok[0].p.name + ' ' + fINR(ok[0].net) + ' − ' + ok[1].p.name + ' ' + fINR(ok[1].net) + ') × ' +
+          inv + ' invoices per month × 12 months';
+      }
+    }
+    return s;
+  }
 
-    var status = document.getElementById('status');
-    var annual = document.getElementById('annual');
-    var formula = document.getElementById('formula');
-    var sorted = results.slice().sort(function (a, b) { return b.r.netInr - a.r.netInr; });
-    last = sorted;
-    if (amount == null || amount <= 0) {
-      status.textContent = 'Enter an invoice amount to compare.';
-      annual.textContent = '₹0.00';
-      formula.textContent = 'Needs an invoice amount and at least two providers.';
-      return;
-    }
-    if (sorted.length < 2) {
-      status.textContent = 'Fill in at least two providers to compare.';
-      annual.textContent = '₹0.00';
-      formula.textContent = 'Needs at least two providers.';
-      return;
-    }
-    status.textContent = '';
-    sorted[0].tr.classList.add('best');
-    sorted[0].tr.querySelector('.tag').hidden = false;
-    var months = 12;
-    var n = count != null && count > 0 ? count : 0;
-    var diff = sorted[0].r.netInr - sorted[1].r.netInr;
-    annual.textContent = fINR(diff * n * months);
-    formula.textContent = 'Formula: (' + sorted[0].p.name + ' ' + fINR(sorted[0].r.netInr) + ' − ' +
-      sorted[1].p.name + ' ' + fINR(sorted[1].r.netInr) + ') × ' + n + ' invoices per month × 12 months.';
+  function render() {
+    var s = state = compute();
+    s.rows.forEach(function (o) {
+      var tr = $('row-' + o.p.id), net = $('net-' + o.p.id);
+      var q = function (k) { return tr.querySelector('[data-o="' + k + '"]'); };
+      q('amt').textContent = s.amt != null ? fUSD(s.amt) : NE;
+      q('fee').textContent = o.fee != null ? fUSD(o.fee) + ' (' + fUSD(o.fx) + ' fixed + ' + o.pc + '%)' : NE;
+      q('rate').textContent = o.rate != null ? fRate(o.rate) : NE;
+      net.textContent = o.net != null ? fINR(o.net) : o.msg;
+      net.classList.toggle('empty', o.net == null);
+      $('fixed-' + o.p.id).setAttribute('aria-invalid', String(o.negFx));
+      $('pct-' + o.p.id).setAttribute('aria-invalid', String(o.negPc));
+      var best = s.win === o;
+      tr.classList.toggle('best', best);
+      tr.querySelector('.tag').hidden = !best;
+    });
+    $('status').textContent = s.status;
+    var a = $('annual');
+    a.textContent = s.annual || 'No estimate yet';
+    a.classList.toggle('empty', !s.annual);
+    $('formula').textContent = s.formula;
   }
 
   function summary() {
-    var amount = num(document.getElementById('amount').value);
-    var lines = ['DashX calculator: comparison summary (prototype, mock data)', 'Invoice amount: ' + (amount ? fUSD(amount) : 'not entered'), ''];
-    if (!last.length) lines.push('No providers filled in.');
-    last.forEach(function (x, i) {
-      lines.push((i === 0 && last.length > 1 ? '[Highest] ' : '') + x.p.name + ': rate ₹' + x.rate + ' per USD, fee ' + fUSD(x.r.fee) +
-        ' (' + fUSD(x.fixed) + ' + ' + x.pct + '%), net ' + fINR(x.r.netInr));
+    var s = compute();
+    var L = ['DashX calculator: after (prototype, mock data)',
+      'Invoice amount: ' + (s.amt != null ? fUSD(s.amt) : 'not entered') + '. Invoices per month: ' + (s.inv != null ? s.inv : 'not entered') + '.', ''];
+    s.rows.forEach(function (o) {
+      if (o.net != null) L.push(o.p.name + ': rate ' + fRate(o.rate) + ', fee ' + fUSD(o.fee) + ' (' + fUSD(o.fx) + ' fixed + ' + o.pc + '%), net ' + fINR(o.net) + '.');
+      else if (o.rate != null && s.amt != null) L.push(o.p.name + ': ' + o.msg.replace(/\.?$/, '.'));
+      else L.push(o.p.name + ': not entered.');
     });
-    PROVIDERS.forEach(function (p) {
-      if (!last.some(function (x) { return x.p === p; })) lines.push(p.name + ': not entered');
-    });
-    lines.push('', 'Estimate per year: ' + document.getElementById('annual').textContent);
-    lines.push(document.getElementById('formula').textContent);
-    lines.push('Competitor figures must be verified at the source. Not affiliated with DashX.');
-    return lines.join('\n');
+    L.push('Prefilled DashX and PayPal rates are from the product’s page. Prefilled fees of 0 are mock.', '');
+    if (s.win) L.push('Highest net INR: ' + s.win.p.name + '.');
+    if (s.annual && s.win) L.push('Estimate per year: ' + s.annual + '. ' + s.formula + '.');
+    else L.push(s.status || s.formula);
+    L.push('Assumes rates and fees stay as entered for 12 months. Real rates change every day.', '',
+      'Prototype. Mock data. Not affiliated with DashX. Competitor figures must be verified at the source.');
+    return L.join('\n');
   }
 
-  document.getElementById('copy').addEventListener('click', function () {
-    var text = summary();
-    var msg = document.getElementById('copy-status');
-    function fallback() {
-      var ta = document.createElement('textarea');
-      ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
-      document.body.appendChild(ta); ta.select();
-      var ok = false; try { ok = document.execCommand('copy'); } catch (e) {}
-      document.body.removeChild(ta);
-      msg.textContent = ok ? 'Copied.' : 'Copy failed. Select and copy by hand.';
+  var cs = $('copy-status');
+  $('copy-summary').addEventListener('click', function () {
+    var t = summary();
+    cs.textContent = '';
+    function done(ok) { cs.textContent = ok ? 'Summary copied.' : 'Could not copy. Your browser blocked it. Try again, or use another browser.'; }
+    function fb() {
+      var ok = false;
+      try {
+        var ta = document.createElement('textarea');
+        ta.value = t; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select();
+        ok = document.execCommand('copy');
+        document.body.removeChild(ta);
+      } catch (e) {}
+      done(ok);
     }
-    if (navigator.clipboard && window.isSecureContext) {
-      navigator.clipboard.writeText(text).then(function () { msg.textContent = 'Copied.'; }, fallback);
-    } else { fallback(); }
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(t).then(function () { done(true); }, fb);
+        return;
+      }
+    } catch (e) {}
+    fb();
   });
-  window.getSummary = summary;
 
-  document.querySelector('.calc').addEventListener('input', update);
-  update();
+  var calc = document.querySelector('.calc');
+  calc.addEventListener('input', render);
+  calc.addEventListener('change', render);
+  render();
 
-  var bB = document.getElementById('btn-before'), bA = document.getElementById('btn-after');
-  var vB = document.getElementById('view-before'), vA = document.getElementById('view-after');
+  var bB = $('tab-before'), bA = $('tab-after'), vB = $('view-before'), vA = $('view-after');
   function show(before) {
     bB.setAttribute('aria-pressed', String(before));
     bA.setAttribute('aria-pressed', String(!before));
-    vB.classList.toggle('off', !before);
-    vA.classList.toggle('off', before);
+    vB.toggleAttribute('data-off', !before); vB.inert = !before;
+    vA.toggleAttribute('data-off', before); vA.inert = before;
   }
   bB.addEventListener('click', function () { show(true); });
   bA.addEventListener('click', function () { show(false); });
