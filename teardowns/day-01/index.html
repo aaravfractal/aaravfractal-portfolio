@@ -52,11 +52,12 @@ a:hover{text-decoration-thickness:2px}
 .toggle button:hover{outline:1px solid var(--paper);outline-offset:-1px}
 .toggle button[aria-pressed="true"]{background:var(--orange);color:var(--ink)}
 .toggle button:focus-visible{outline:var(--focus);outline-offset:2px}
+.toggle button[aria-pressed="true"]:focus-visible{outline-color:var(--paper)}
 .no-js .toggle{display:none}
 
 .views{display:grid}
 .view{grid-area:1/1;min-width:0}
-.js .view[data-off]{visibility:hidden}
+.js .view[data-off],.view[hidden]{display:none}
 .no-js .views{display:block}
 .no-js .view+.view{margin-top:var(--s6)}
 .no-js .calc{display:none}
@@ -92,7 +93,7 @@ table.cmp caption{display:block;text-align:left;font-size:var(--fs-h2);line-heig
 .cap-help{display:block;margin-top:var(--s1);font-weight:400;line-height:var(--lh-body)}
 table.cmp thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 table.cmp tbody{display:block}
-table.cmp tr.card{display:grid;gap:var(--s3);grid-template-columns:1fr 1fr}
+table.cmp tr.card{display:grid;gap:var(--s3);grid-template-columns:1fr}
 table.cmp th,table.cmp td{display:block;text-align:left;padding:0;font-weight:400;min-width:0}
 table.cmp td.field{display:flex}
 .c-prov,.c-rate,.c-res{grid-column:1/-1}
@@ -140,7 +141,7 @@ footer{margin-top:var(--s6);padding-top:var(--s4);border-top:1px solid var(--ink
   .card.best{border-style:double;border-width:4px}
   .toggle button[aria-pressed="true"]{background:Highlight;color:HighlightText;forced-color-adjust:none}
   .tag{forced-color-adjust:none;background:Highlight;color:HighlightText}
-  :focus-visible{outline-color:Highlight}
+  :focus-visible,.toggle button[aria-pressed="true"]:focus-visible{outline-color:CanvasText}
 }
 </style>
 </head>
@@ -195,7 +196,8 @@ footer{margin-top:var(--s6);padding-top:var(--s4);border-top:1px solid var(--ink
             <input id="invoices" type="number" inputmode="decimal" min="1" step="1" value="4">
           </div>
         </div>
-        <p class="status" id="status" aria-live="polite"></p>
+        <p class="status" id="status"></p>
+        <p class="sr-only" id="live" role="status" aria-live="polite"></p>
 
         <table class="cmp" role="table">
           <caption>Compare what lands in INR<span class="cap-help note">Results use the figures in each row. Change any figure to update them.</span></caption>
@@ -338,8 +340,11 @@ footer{margin-top:var(--s6);padding-top:var(--s4);border-top:1px solid var(--ink
       q('rate').textContent = o.rate != null ? fRate(o.rate) : NE;
       net.textContent = o.net != null ? fINR(o.net) : o.msg;
       net.classList.toggle('empty', o.net == null);
-      $('fixed-' + o.p.id).setAttribute('aria-invalid', String(o.negFx));
-      $('pct-' + o.p.id).setAttribute('aria-invalid', String(o.negPc));
+      [['fixed-', o.negFx], ['pct-', o.negPc]].forEach(function (f) {
+        var el = $(f[0] + o.p.id);
+        el.setAttribute('aria-invalid', String(f[1]));
+        if (f[1]) el.setAttribute('aria-describedby', 'net-' + o.p.id); else el.removeAttribute('aria-describedby');
+      });
       var best = s.win === o;
       tr.classList.toggle('best', best);
       tr.querySelector('.tag').hidden = !best;
@@ -394,17 +399,26 @@ footer{margin-top:var(--s6);padding-top:var(--s4);border-top:1px solid var(--ink
     fb();
   });
 
+  // Speak one summary after input pauses (about 500 ms). Never on page load.
+  var liveT;
+  function announce() {
+    var s = state, t = s.status;
+    if (s.win) t = s.win.p.name + ' leaves the most: ' + fINR(s.win.net) + '. ' +
+      (s.annual ? 'Yearly gap ' + s.annual + '.' : s.formula);
+    $('live').textContent = t;
+  }
+  function onInput() { render(); clearTimeout(liveT); liveT = setTimeout(announce, 500); }
   var calc = document.querySelector('.calc');
-  calc.addEventListener('input', render);
-  calc.addEventListener('change', render);
+  calc.addEventListener('input', onInput);
+  calc.addEventListener('change', onInput);
   render();
 
   var bB = $('tab-before'), bA = $('tab-after'), vB = $('view-before'), vA = $('view-after');
   function show(before) {
     bB.setAttribute('aria-pressed', String(before));
     bA.setAttribute('aria-pressed', String(!before));
-    vB.toggleAttribute('data-off', !before); vB.inert = !before;
-    vA.toggleAttribute('data-off', before); vA.inert = before;
+    vB.toggleAttribute('data-off', !before); vB.hidden = !before;
+    vA.toggleAttribute('data-off', before); vA.hidden = before;
   }
   bB.addEventListener('click', function () { show(true); });
   bA.addEventListener('click', function () { show(false); });
