@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Anon Wallet: the first five minutes | Day 2 teardown</title>
+<meta name="description" content="Day 2 of 10. A teardown of the first five minutes of Anon Wallet, with an unofficial Start here prototype.">
+<meta name="theme-color" content="#0B0B0C">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230B0B0C'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%23FF5B1F'/%3E%3C/svg%3E">
+<style>
+  :root{
+    --ink:#0B0B0C; --ink-2:#141416; --ink-3:#2A2A2E; --orange:#FF5B1F; --orange-hi:#FF7A45;
+    --paper:#F6F2EA; --mute:#A29E97;
+    color-scheme: dark;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ink);color:var(--paper);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  main{max-width:760px;margin:0 auto;
+    padding:max(28px,env(safe-area-inset-top)) max(22px,env(safe-area-inset-right)) max(56px,env(safe-area-inset-bottom)) max(22px,env(safe-area-inset-left))}
+  .top{color:var(--mute);font-size:17px;margin:0 0 28px}
+  .top a{color:var(--mute);display:inline-flex;align-items:center;min-height:44px}
+  .line{width:72px;height:4px;background:var(--orange);border-radius:2px;margin:0 0 24px}
+  h1{font-family:ui-serif,Georgia,"Times New Roman",serif;font-weight:500;
+    font-size:clamp(38px,9vw,64px);line-height:1.06;letter-spacing:-0.02em;margin:0 0 16px}
+  h2{font-size:clamp(24px,5vw,30px);line-height:1.2;margin:48px 0 14px}
+  h3{font-size:20px;margin:0 0 6px}
+  p{margin:0 0 14px}
+  .lead{font-size:clamp(20px,3.6vw,24px);line-height:1.4;max-width:30em}
+  .mute{color:var(--mute)}
+  .card{background:var(--ink-2);border:2px solid var(--ink-3);border-radius:16px;padding:22px;margin:0 0 16px}
+  .tabs{display:flex;gap:10px;margin:28px 0 22px}
+  button{font:inherit;color:var(--paper);cursor:pointer}
+  .tab,.choice{min-height:52px;padding:0 22px;border-radius:14px;border:2px solid var(--ink-3);background:var(--ink-2);font-weight:600;font-size:18px}
+  .tab[aria-pressed="true"],.choice[aria-pressed="true"]{background:var(--orange);border-color:var(--orange);color:var(--ink)}
+  .tab:hover,.choice:hover{border-color:var(--orange)}
+  :focus-visible{outline:3px solid var(--paper);outline-offset:3px}
+  .choices{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 22px}
+  .q{font-size:20px;font-weight:600;margin:0 0 12px}
+  .chips{display:flex;flex-wrap:wrap;gap:10px;list-style:none;margin:0 0 6px;padding:0}
+  .chips li{border:2px solid var(--ink-3);border-radius:12px;padding:8px 14px;font-size:17px;background:var(--ink)}
+  .num{font-size:56px;font-weight:700;color:var(--orange);line-height:1;margin:0 0 6px}
+  ol.steps{margin:0;padding-left:1.3em}
+  ol.steps li{margin:0 0 14px}
+  .src{display:block;color:var(--mute);font-size:16px}
+  .note{border-left:4px solid var(--orange);padding:4px 0 4px 16px;margin:18px 0}
+  details{border:2px solid var(--ink-3);border-radius:14px;margin:0 0 10px;background:var(--ink-2)}
+  summary{min-height:52px;display:flex;align-items:center;padding:0 18px;font-weight:600;cursor:pointer;list-style-position:inside}
+  details p{padding:0 18px 4px}
+  table{width:100%;border-collapse:collapse;font-size:17px}
+  th,td{text-align:left;padding:12px 10px;border-bottom:2px solid var(--ink-3);vertical-align:top}
+  th{color:var(--mute);font-weight:600}
+  .scroll{overflow-x:auto}
+  a{color:var(--orange-hi)}
+  footer{margin-top:56px;border-top:2px solid var(--ink-3);padding-top:22px;color:var(--mute);font-size:16px}
+  #view-after,.tabs{display:none}
+  .js #view-after{display:block}
+  .js .tabs{display:flex}
+  [hidden]{display:none !important}
+  @media (prefers-reduced-motion: reduce){*{transition:none !important;animation:none !important}}
+</style>
+</head>
+<body>
+<main>
+  <p class="top"><a href="/teardowns/">Ten teardowns</a> · Day 2 of 10</p>
+  <div class="line" aria-hidden="true"></div>
+  <h1>Anon Wallet: the first five minutes</h1>
+  <p class="lead">A privacy wallet with a browser extension and a mobile app. This teardown looks at what a new visitor meets before the first private transaction.</p>
+
+  <div class="tabs" role="group" aria-label="Choose a view">
+    <button class="tab" id="tab-before" type="button" aria-pressed="false">Before</button>
+    <button class="tab" id="tab-after" type="button" aria-pressed="true">After</button>
+  </div>
+
+  <section id="view-before">
+    <div class="card">
+      <h3>What works well</h3>
+      <p>A clear promise on the homepage: practical privacy, wherever you need it. Release notes are dated and detailed. A "check your download" section explains how to verify the file. The Quick Start docs walk through account, funding, shielding and a private send. Version 0.11.1 added six languages.</p>
+    </div>
+
+    <h2>What a first-time visitor meets</h2>
+    <div class="card">
+      <p class="num">7</p>
+      <p>different labels for installing, seen across the site and release notes:</p>
+      <ul class="chips">
+        <li>Get Anon</li><li>Set up Anon</li><li>Install extension</li><li>Get the extension</li>
+        <li>Get current extension</li><li>Install mobile</li><li>Get the mobile app</li>
+      </ul>
+      <p class="src">Some differences are natural, because the extension and the mobile app are separate. A new visitor still has to work out where to begin.</p>
+    </div>
+    <div class="card">
+      <h3>Many product names at once</h3>
+      <ul class="chips">
+        <li>Anon Wallet</li><li>Portal</li><li>Network Guard</li><li>Railscan</li><li>Railgun</li><li>.anon.buzz names</li><li>Broadcaster</li><li>PPOI</li>
+      </ul>
+      <p class="src">All appear in menus, docs or release notes. No single page maps what each one is.</p>
+    </div>
+    <div class="card">
+      <h3>Docs and product are on different versions</h3>
+      <div class="scroll">
+      <table>
+        <tr><th>Where</th><th>Version shown</th></tr>
+        <tr><td>Docs footer</td><td>v0.9.12</td></tr>
+        <tr><td>Release notes, current</td><td>v0.11.1 (15 Oct 2026)</td></tr>
+        <tr><td>Release notes, v0.9.12</td><td>dated 22 Sep 2026</td></tr>
+      </table>
+      </div>
+      <p class="src">If a screen in the extension differs from the Quick Start, the docs may be the older one.</p>
+    </div>
+    <div class="card">
+      <h3>Several "coming soon" items</h3>
+      <p>SDK and Primitives in the Build menu, the Desktop app, and Windows and Linux support for Network Guard.</p>
+    </div>
+    <div class="card">
+      <h3>Language menu on the site</h3>
+      <p>English, Chinese, Korean, Russian, Japanese, Spanish and French. Hindi is not listed.</p>
+      <p class="src">Only worth acting on if India is a target market.</p>
+    </div>
+  </section>
+
+  <noscript><p class="note">Turn on JavaScript to use the Start here page. The Before view above works without it.</p></noscript>
+
+  <section id="view-after">
+    <h2>Start here</h2>
+    <p class="mute">Two questions, then the steps in order. Every step comes from Anon's own pages and is marked with where it came from.</p>
+
+    <div class="card">
+      <p class="q" id="q1">Where do you want to use Anon?</p>
+      <div class="choices" role="group" aria-labelledby="q1">
+        <button class="choice" id="q-where-browser" type="button" aria-pressed="false" data-v="browser">In my browser</button>
+        <button class="choice" id="q-where-phone" type="button" aria-pressed="false" data-v="phone">On my phone</button>
+      </div>
+      <div id="q2wrap" hidden>
+        <p class="q" id="q2">Do you already use the Anon extension?</p>
+        <div class="choices" role="group" aria-labelledby="q2">
+          <button class="choice" id="q-ext-no" type="button" aria-pressed="false" data-v="no">No, I'm new</button>
+          <button class="choice" id="q-ext-yes" type="button" aria-pressed="false" data-v="yes">Yes</button>
+        </div>
+      </div>
+    </div>
+
+    <section id="result" class="card" aria-live="polite" tabindex="-1" hidden>
+      <h3 id="result-title"></h3>
+      <ol class="steps" id="result-steps"></ol>
+      <p class="note" id="result-note"></p>
+    </section>
+
+    <h2>Plain-words glossary</h2>
+    <p class="mute">Only terms Anon explains on its own pages.</p>
+    <details><summary>Shield</summary><p>Moving supported assets from your public balance into a private balance, so you can send and swap from it. Source: anon.inc homepage.</p></details>
+    <details><summary>Portal</summary><p>A full-page workspace that opens from your balance in the extension, for managing balances, swaps and positions. Source: anon.inc browser page.</p></details>
+    <details><summary>Network Guard</summary><p>Connects Anon to your VPN app. The site lists Mac now, with Windows and Linux coming soon. Source: anon.inc downloads.</p></details>
+    <details><summary>Railscan</summary><p>A page to explore public activity on Railgun. Source: anon.inc Products menu.</p></details>
+    <details><summary>.anon.buzz name</summary><p>A name people can find and pay, used as a username. Source: anon.inc Products menu.</p></details>
+  </section>
+
+  <h2>What I did not test</h2>
+  <p>I did not install or fund the wallet. Fees, shielding and private sends are untested here, so this page makes no claim about them. The steps above were read from Anon's pages on 21 October 2026.</p>
+
+  <footer>
+    <p>Unofficial prototype. Not affiliated with Anon. Built from the pages at <a href="https://anon.inc" rel="noopener">anon.inc</a> and its docs. Always use the official site for downloads.</p>
+    <p>This page never asks for a recovery phrase, a password or an address. Never type those anywhere except inside the wallet itself.</p>
+  </footer>
+</main>
+
+<script>
+(function(){
+  document.documentElement.classList.add('js');
+  var $ = function(id){ return document.getElementById(id); };
+  var before = $('view-before'), after = $('view-after');
+  var tb = $('tab-before'), ta = $('tab-after');
+  function show(which){
+    var isAfter = which === 'after';
+    before.hidden = isAfter; after.hidden = !isAfter;
+    ta.setAttribute('aria-pressed', String(isAfter));
+    tb.setAttribute('aria-pressed', String(!isAfter));
+  }
+  tb.addEventListener('click', function(){ show('before'); });
+  ta.addEventListener('click', function(){ show('after'); });
+  show('after');
+
+  var where = null, ext = null;
+  var btns = document.querySelectorAll('.choice');
+  var q2 = $('q2wrap'), res = $('result');
+
+  var QS = 'Source: Quick Start docs';
+  var DATA = {
+    browserNew: {
+      title: 'Browser, new to Anon',
+      steps: [
+        ['Install the extension from the official site (Chrome, Brave or Edge).', 'Source: anon.inc browser page'],
+        ['Create an account. A passkey is recommended; a password also works.', QS + ', step 1'],
+        ['Write down the 12-word recovery phrase and keep it offline. It is the master backup for your wallet.', QS + ', step 1'],
+        ['Fund your wallet. It starts with a public Ethereum address.', QS + ', step 2'],
+        ['Shield your funds into the private balance.', QS + ', step 3'],
+        ['Make a private send: tap Send, switch Private on, add the recipient and amount, then review the network, delivery method and estimated fees before you confirm.', QS + ', step 4']
+      ]
+    },
+    browserHave: {
+      title: 'Browser, already using the extension',
+      steps: [
+        ['Open the extension and check you are on the current version (the release notes list v0.11.1).', 'Source: anon.inc release notes'],
+        ['Shield funds, then make a private send. Review the network, delivery method and estimated fees before you confirm.', QS + ', steps 3 and 4'],
+        ['Want it on your phone too? Choose "On my phone" and "Yes" above for the pairing steps.', 'Source: anon.inc mobile page']
+      ]
+    },
+    phoneHave: {
+      title: 'Phone, already using the extension',
+      steps: [
+        ['Open Anon Mobile, tap Set up Anon, then choose Import from extension. Keep the pairing code visible.', 'Source: anon.inc mobile page, step 1'],
+        ['In the extension go to Settings, Security, Recovery, Mobile Sync, and enter the code shown on your phone.', 'Source: anon.inc mobile page, step 2'],
+        ['Authorize locally. The recovery bundle is encrypted on your device and never uploaded.', 'Source: anon.inc mobile page, step 3'],
+        ['Paste the one-time password into the phone, open its scanner and scan the short-lived encrypted QR.', 'Source: anon.inc mobile page, step 4']
+      ]
+    },
+    phoneNew: {
+      title: 'Phone, new to Anon',
+      steps: [
+        ['Open the official site, choose Products, then Mobile. The site lists Android and iOS (beta).', 'Source: anon.inc Products menu'],
+        ['Install the app from the official link and create an account.', 'Source: anon.inc mobile page'],
+        ['The first-time setup screens for mobile were not covered by the pages I read. Follow the app, and keep your recovery phrase offline.', 'Not covered here']
+      ]
+    }
+  };
+  var NOTE = 'The docs footer says v0.9.12 and the release notes say v0.11.1. If a screen differs from these steps, trust the app.';
+
+  function render(){
+    if (!where){ res.hidden = true; q2.hidden = true; return; }
+    q2.hidden = false;
+    if (ext === null){ res.hidden = true; return; }
+    var key = where + (ext === 'yes' ? 'Have' : 'New');
+    key = key.charAt(0).toLowerCase() + key.slice(1);
+    var d = DATA[key];
+    $('result-title').textContent = d.title;
+    var ol = $('result-steps'); ol.innerHTML = '';
+    d.steps.forEach(function(s){
+      var li = document.createElement('li');
+      li.appendChild(document.createTextNode(s[0]));
+      var sp = document.createElement('span'); sp.className = 'src'; sp.textContent = s[1];
+      li.appendChild(sp); ol.appendChild(li);
+    });
+    $('result-note').textContent = NOTE;
+    res.hidden = false;
+  }
+  Array.prototype.forEach.call(btns, function(b){
+    b.addEventListener('click', function(){
+      var v = b.getAttribute('data-v');
+      if (v === 'browser' || v === 'phone'){ where = v; ext = null;
+        $('q-ext-no').setAttribute('aria-pressed','false'); $('q-ext-yes').setAttribute('aria-pressed','false');
+        $('q-where-browser').setAttribute('aria-pressed', String(v==='browser'));
+        $('q-where-phone').setAttribute('aria-pressed', String(v==='phone'));
+      } else { ext = v;
+        $('q-ext-no').setAttribute('aria-pressed', String(v==='no'));
+        $('q-ext-yes').setAttribute('aria-pressed', String(v==='yes'));
+      }
+      render();
+      if (!res.hidden) res.focus({preventScroll:false});
+    });
+  });
+})();
+</script>
+</body>
+</html>
